@@ -36,7 +36,7 @@ const router = createBrowserRouter(
       <Route path="alumindirectory" element={<AlumniDirectory />} />
       <Route path="reunion" element={<Reunion />} />
       <Route path="newsevents" element={<NewsEventsPage />} />
-    
+      
  
 
 </Route>
