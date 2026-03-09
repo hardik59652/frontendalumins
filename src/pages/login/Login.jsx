@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight, Eye, EyeOff, ShieldCheck, User } from "lucide-react";
@@ -7,6 +7,17 @@ function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
+  const [registeredName, setRegisteredName] = useState("");
+
+  useEffect(() => {
+
+  const name = localStorage.getItem("registeredName");
+
+  if (name) {
+    setRegisteredName(name);
+  }
+
+}, []);
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -36,15 +47,20 @@ function Login() {
     console.log(result);
    
     if (response.ok) {
-      localStorage.setItem("user", JSON.stringify(result));
 
-      // example role check
-      if (data.email.toLowerCase() === "admin@gmail.com") {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/alumin-dashboard")
-      }
-      window.location.reload();
+  localStorage.setItem("user", JSON.stringify(result));
+
+  // registration wala name hata do
+  localStorage.removeItem("registeredName");
+
+  if (data.email.toLowerCase() === "admin@gmail.com") {
+    navigate("/admin-dashboard");
+  } else {
+    navigate("/alumin-dashboard");
+  }
+
+  window.location.reload();
+
 
     } else {
       alert(result.message || "Login failed");
@@ -74,7 +90,9 @@ function Login() {
             <ShieldCheck className="text-white" size={32} />
           </div>
           <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">
-            Welcome <span className="text-blue-600">Back</span>
+            Welcome <span className="text-blue-600">
+{registeredName ? registeredName : "Back"}
+</span>
           </h2>
           <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">
             VGEC Alumni Portal Login
@@ -123,12 +141,7 @@ function Login() {
             </div>
           </div>
 
-          {/* Role Helper Text (Subtle) */}
-          <p className="text-[10px] text-gray-400 font-medium italic text-center px-4">
-            Use <span className="font-bold text-blue-500">admin@gmail.com</span> for Admin access.
-          </p>
-
-          {/* Submit Button */}
+            {/* Submit Button */}
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}

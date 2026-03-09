@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   User, Mail, Lock, Phone, GraduationCap, 
@@ -6,6 +7,7 @@ import {
   Camera, ChevronRight, Hash, Calendar 
 } from "lucide-react";
 const Register = () => {
+  const navigate = useNavigate();
 
 const [profileImage,setProfileImage]=useState(null)
   const [formData, setFormData] = useState({
@@ -58,9 +60,16 @@ const handleSubmit = async (e) => {
     const text = await response.text(); 
     console.log("RESPONSE:", text);
 
-    if (response.ok) {
-      alert("Registration Successful 🎉");
-    } else {
+if (response.ok) {
+
+  alert("Registration Successful! Please login.");
+
+  localStorage.setItem("registeredName", formData.fullName);
+
+  navigate("/login");
+
+}
+    else {
       alert("Backend returned error");
     }
 

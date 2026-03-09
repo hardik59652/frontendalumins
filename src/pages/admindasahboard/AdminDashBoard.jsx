@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -15,9 +15,50 @@ import {
 
 function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // --- DYNAMIC USER STATE ---
+  const [userData, setUserData] = useState({
+    name: "Admin",
+    role: "Super Admin",
+    profilePic: "",
+    department: "Management"
+  });
 
-  // Sidebar Links Configuration
+  useEffect(() => {
+    // 1. LocalStorage se user data nikalna
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+    // Agar backend se fetch karna hai toh yahan API call aayegi
+    if (storedUser) {
+      setUserData({
+        name: storedUser.name || "Admin",
+        role: storedUser.role || "Super Admin",
+        profilePic: storedUser.profilePic || "", 
+        department: storedUser.department || "VGEC"
+      });
+    } else {
+      // Agar user login nahi hai toh wapas bhej do
+      navigate("/login"); 
+    }
+  }, []);
+
+ const handleLogout = async () => {
+
+  try {
+    await fetch("http://10.11.6.240:8000/api/v1/users/logout", {
+      method: "POST",
+      credentials: "include"
+    });
+  } catch (error) {
+    console.log(error);
+  }
+ localStorage.removeItem("user");
+  localStorage.removeItem("registeredName");
+  
+  navigate("/login");
+};
+
   const menuItems = [
     { path: "overview", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
     { path: "pending-opportunities", label: "Opportunities", icon: <Briefcase size={20} /> },
@@ -35,20 +76,18 @@ function AdminLayout() {
         animate={{ width: isCollapsed ? "80px" : "280px" }}
         className="bg-[#0f172a] text-slate-300 flex flex-col shadow-2xl z-50 sticky top-0 h-screen"
       >
-        {/* Header / Logo */}
         <div className="p-6 flex items-center gap-3 border-b border-slate-800/50">
-          <div className="bg-blue-600 p-2 rounded-xl text-blue-400 shadow-lg shadow-blue-900/20 shrink-0">
+          <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-900/20 shrink-0">
             <ShieldCheck size={24} strokeWidth={2.5} />
           </div>
           {!isCollapsed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <h2 className="text-lg font-black text-white uppercase tracking-tighter leading-none">Admin <span className="text-blue-500">HQ</span></h2>
+              <h2 className="text-lg font-black text-blue-500 uppercase tracking-tighter leading-none">Admin <span className="text-blue-500">HQ</span></h2>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">VGEC Portal</p>
             </motion.div>
           )}
         </div>
 
-        {/* Navigation Links */}
         <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto no-scrollbar">
           {menuItems.map((item) => {
             const isActive = location.pathname.includes(item.path);
@@ -73,7 +112,7 @@ function AdminLayout() {
                 )}
 
                 {isActive && !isCollapsed && (
-                  <motion.div layoutId="activeInd" className="absolute right-4 text-blue-400/50">
+                  <motion.div layoutId="activeInd" className="absolute right-4 text-white/50">
                     <ChevronRight size={14} />
                   </motion.div>
                 )}
@@ -82,9 +121,11 @@ function AdminLayout() {
           })}
         </nav>
 
-        {/* Footer / Logout */}
         <div className="p-4 border-t border-slate-800/50">
-          <button className="w-full flex items-center gap-4 p-4 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all font-black uppercase text-xs tracking-widest">
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-4 p-4 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all font-black uppercase text-xs tracking-widest"
+          >
             <LogOut size={20} />
             {!isCollapsed && <span>Logout</span>}
           </button>
@@ -94,10 +135,8 @@ function AdminLayout() {
       {/* --- MAIN CONTENT --- */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         
-        {/* Top Header for Admin */}
         <header className="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-             {/* Collapse Toggle */}
              <button 
                onClick={() => setIsCollapsed(!isCollapsed)}
                className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-500"
@@ -105,22 +144,28 @@ function AdminLayout() {
                <LayoutDashboard size={20} />
              </button>
              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest italic">
-               System Management Console
+               {userData.department} Console
              </h3>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-xs font-black text-slate-900 uppercase">Super Admin</p>
-              <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Online</p>
+              {/* DYNAMIC NAME */}
+              <p className="text-xs font-black text-slate-900 uppercase">{userData.name}</p>
+              <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{userData.role}</p>
             </div>
-            <div className="w-10 h-10 bg-slate-100 rounded-full border-2 border-white shadow-sm flex items-center justify-center font-black text-slate-500">
-              A
+            
+            {/* DYNAMIC PROFILE PHOTO */}
+            <div className="w-10 h-10 rounded-xl border-2 border-white shadow-sm flex items-center justify-center font-black text-white bg-blue-600 overflow-hidden">
+              {userData.profilePic ? (
+                <img src={userData.profilePic} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+               userData?.name?.charAt(0) || "A"// Agar photo nahi hai toh first letter
+              )}
             </div>
           </div>
         </header>
 
-        {/* Content Area */}
         <div className="p-6 md:p-10 max-w-7xl">
           <AnimatePresence mode="wait">
             <motion.div
