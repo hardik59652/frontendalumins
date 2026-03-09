@@ -13,7 +13,7 @@ const AlumniDashboard = () => {
             Y
           </div>
           <div className="mb-2">
-            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-gray-900 md:text-white">Yash Patel</h1>
+            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-gray-900 md:text-black">Yash Patel</h1>
             <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 md:text-blue-100">Class of 2024 • IT Dept</p>
           </div>
         </div>

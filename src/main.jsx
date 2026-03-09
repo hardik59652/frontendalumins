@@ -1,8 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import AdminDashboard from "./pages/admindasahboard/AdminDashBoard.jsx";
-import AlumniDashboard from './pages/alumindashboard/AlumiinDashBoard.jsx';
+
 import { createBrowserRouter,  createRoutesFromElements,Route,  RouterProvider } from 'react-router-dom'
 import Layout from './layout.jsx'
 import Home from './pages/home/Home.jsx'
@@ -17,6 +16,8 @@ import GivingBackPage from './pages/givingback/GivingBack.jsx'
 import AlumniDirectory from './pages/alumindirectory/AluminDirectory.jsx';
 import Reunion from './pages/reunion/reunion.jsx';
 import NewsEventsPage from './pages/newsevents/NewsEvents.jsx';
+import AdminDashboard from "./pages/admindasahboard/AdminDashBoard.jsx";
+import AlumniDashboard from './pages/alumindashboard/AlumiinDashBoard.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,7 +31,6 @@ const router = createBrowserRouter(
       <Route path='opportunities' element={<Opportunities />} />
       <Route path='donation' element={<Donation />} />
       <Route path='givingback' element={<GivingBackPage />} />
-      <Route path="register" element={<Register />} />
       <Route path="admin-dashboard" element={<AdminDashboard />} />
       <Route path="alumin-dashboard" element={<AlumniDashboard />} />
       <Route path="alumindirectory" element={<AlumniDirectory />} />

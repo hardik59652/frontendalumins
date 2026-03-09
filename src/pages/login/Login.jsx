@@ -12,15 +12,49 @@ function Login() {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // Role-based logic
-    if (data.email.toLowerCase() === "admin@gmail.com") {
-      navigate("/admin-dashboard");
+ const handleLogin = async (e) => {
+  e.preventDefault();
+
+  try {
+    const form = new FormData();
+    form.append("email", data.email);
+    form.append("password", data.password);
+
+    const response = await fetch("/api/v1/users/login", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  credentials: "include",
+  body: JSON.stringify({
+    email:data.email,
+    password:data.password
+  })
+})
+
+    const result = await response.json();
+    console.log(result);
+   
+    if (response.ok) {
+      localStorage.setItem("user", JSON.stringify(result));
+
+      // example role check
+      if (data.email.toLowerCase() === "admin@gmail.com") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/alumin-dashboard")
+      }
+      window.location.reload();
+
     } else {
-      navigate("/alumindashboard");
+      alert(result.message || "Login failed");
     }
-  };
+
+  } catch (error) {
+    console.log("LOGIN ERROR:", error);
+    alert("Server error");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4 relative overflow-hidden">

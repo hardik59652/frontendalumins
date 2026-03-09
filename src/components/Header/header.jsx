@@ -2,7 +2,34 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X, ChevronRight } from "lucide-react";
 
+
 export default function Header() {
+  const user = JSON.parse(localStorage.getItem("user"));
+ const handleLogout = async () => {
+  try {
+
+    const response = await fetch("http://10.11.6.240:8000/api/v1/users/logout", {
+      method: "POST",
+      credentials: "include"
+    })
+  
+
+    const result = await response.json();
+    console.log(result);
+
+    // local logout
+    localStorage.removeItem("user");
+
+    // redirect
+    window.location.href = "/login";
+
+  } catch (error) {
+    console.log("Logout error:", error);
+
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+  }
+};
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const vgecLogo =
@@ -73,24 +100,40 @@ export default function Header() {
           </ul>
 
           {/* RIGHT BUTTONS */}
+{/* RIGHT BUTTONS */}
 
-          <div className="hidden lg:flex items-center gap-3">
+<div className="hidden lg:flex items-center gap-3">
 
-            <Link
-              to="/login"
-              className="text-gray-800 hover:bg-gray-100 font-semibold rounded-lg text-sm px-4 py-2 transition"
-            >
-              Log in
-            </Link>
+{user ? (
 
-            <Link
-              to="/register"
-              className="text-white bg-blue-700 hover:bg-blue-800 font-semibold rounded-lg text-sm px-5 py-2.5 shadow-md transition"
-            >
-              Registration
-            </Link>
+<button
+onClick={handleLogout}
+className="text-white bg-red-600 hover:bg-red-700 font-semibold rounded-lg text-sm px-5 py-2.5 shadow-md transition"
+>
+Logout
+</button>
 
-          </div>
+) : (
+
+<>
+<Link
+to="/login"
+className="text-gray-800 hover:bg-gray-100 font-semibold rounded-lg text-sm px-4 py-2 transition"
+>
+Log in
+</Link>
+
+<Link
+to="/register"
+className="text-white bg-blue-700 hover:bg-blue-800 font-semibold rounded-lg text-sm px-5 py-2.5 shadow-md transition"
+>
+Registration
+</Link>
+</>
+
+)}
+
+</div>
 
           {/* MOBILE MENU BUTTON */}
 
@@ -130,25 +173,43 @@ export default function Header() {
                 </li>
               ))}
 
-              <div className="flex flex-col gap-3 px-4 mt-6">
+           <div className="flex flex-col gap-3 px-4 mt-6">
 
-                <Link
-                  to="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-center py-3 font-semibold bg-gray-100 rounded-lg"
-                >
-                  Log in
-                </Link>
+{user ? (
 
-                <Link
-                  to="/register"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-center py-3 font-semibold text-white bg-blue-700 rounded-lg"
-                >
-                  Registration
-                </Link>
+<button
+onClick={()=>{
+handleLogout()
+setIsMenuOpen(false)
+}}
+className="text-center py-3 font-semibold text-white bg-red-600 rounded-lg"
+>
+Logout
+</button>
 
-              </div>
+) : (
+
+<>
+<Link
+to="/login"
+onClick={() => setIsMenuOpen(false)}
+className="text-center py-3 font-semibold bg-gray-100 rounded-lg"
+>
+Log in
+</Link>
+
+<Link
+to="/register"
+onClick={() => setIsMenuOpen(false)}
+className="text-center py-3 font-semibold text-white bg-blue-700 rounded-lg"
+>
+Registration
+</Link>
+</>
+
+)}
+
+</div>
 
             </ul>
 

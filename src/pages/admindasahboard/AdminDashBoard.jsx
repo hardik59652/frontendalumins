@@ -37,7 +37,7 @@ function AdminLayout() {
       >
         {/* Header / Logo */}
         <div className="p-6 flex items-center gap-3 border-b border-slate-800/50">
-          <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-900/20 shrink-0">
+          <div className="bg-blue-600 p-2 rounded-xl text-blue-400 shadow-lg shadow-blue-900/20 shrink-0">
             <ShieldCheck size={24} strokeWidth={2.5} />
           </div>
           {!isCollapsed && (
@@ -73,7 +73,7 @@ function AdminLayout() {
                 )}
 
                 {isActive && !isCollapsed && (
-                  <motion.div layoutId="activeInd" className="absolute right-4 text-white/50">
+                  <motion.div layoutId="activeInd" className="absolute right-4 text-blue-400/50">
                     <ChevronRight size={14} />
                   </motion.div>
                 )}
