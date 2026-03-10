@@ -3,6 +3,13 @@ import { motion } from 'framer-motion';
 import { User, Briefcase, Bell, Settings, Award, MessageSquare, ChevronRight, Star } from 'lucide-react';
 
 const AlumniDashboard = () => {
+    const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    setUser(loggedUser);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12 font-sans text-gray-900">
       
@@ -13,8 +20,8 @@ const AlumniDashboard = () => {
             Y
           </div>
           <div className="mb-2">
-            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-gray-900 md:text-black">Yash Patel</h1>
-            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 md:text-blue-100">Class of 2024 • IT Dept</p>
+            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-gray-900 md:text-black">{user?.name}</h1>
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 md:text-blue-100">Class of {user?.batch} • {user?.department} Dept</p>
           </div>
         </div>
       </div>
@@ -46,7 +53,7 @@ const AlumniDashboard = () => {
           {/* Welcome Message */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden">
             <Star className="absolute -right-4 -top-4 w-24 h-24 opacity-10 rotate-12" />
-            <h2 className="text-2xl font-black uppercase tracking-tight mb-2">Welcome Back, Yash!</h2>
+            <h2 className="text-2xl font-black uppercase tracking-tight mb-2">Welcome Back, {user?.name}!</h2>
             <p className="text-blue-100 text-sm opacity-80 italic">Check out the latest job openings from your seniors today.</p>
           </div>
 
