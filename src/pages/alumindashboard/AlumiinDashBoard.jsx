@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { motion } from 'framer-motion';
 import { User, Briefcase, Bell, Settings, Award, MessageSquare, ChevronRight, Star } from 'lucide-react';
 
 const AlumniDashboard = () => {
     const [user, setUser] = useState(null);
+useEffect(() => {
+  const storedUser = localStorage.getItem("loggedInUser");
 
-  useEffect(() => {
-    const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    setUser(loggedUser);
-  }, []);
+  if (storedUser) {
+    setUser(JSON.parse(storedUser));
+  }
+}, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12 font-sans text-gray-900">
@@ -16,9 +18,19 @@ const AlumniDashboard = () => {
       {/* Header Banner */}
       <div className="bg-[#1e40af] h-32 md:h-48 w-full relative">
         <div className="absolute -bottom-12 left-6 md:left-12 flex items-end gap-4">
-          <div className="w-24 h-24 md:w-32 md:h-32 bg-white rounded-[2rem] border-4 border-white shadow-xl flex items-center justify-center text-blue-600 font-black text-4xl">
-            Y
-          </div>
+          <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] border-4 border-white shadow-xl overflow-hidden">
+  {user?.photo ? (
+    <img
+      src={user.photo}
+      alt="profile"
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <div className="flex items-center justify-center w-full h-full text-blue-600 font-black text-4xl">
+      {user?.name?.charAt(0)}
+    </div>
+  )}
+</div>
           <div className="mb-2">
             <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-gray-900 md:text-black">{user?.name}</h1>
             <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 md:text-blue-100">Class of {user?.batch} • {user?.department} Dept</p>

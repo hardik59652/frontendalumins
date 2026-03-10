@@ -64,7 +64,14 @@ if (response.ok) {
 
   alert("Registration Successful! Please login.");
 
-  localStorage.setItem("registeredName", formData.fullName);
+  const userData = {
+    name: formData.fullName,
+    batch: formData.graduationYear,
+    department: formData.department,
+    photo: profileImage ? URL.createObjectURL(profileImage) : null
+  };
+
+  localStorage.setItem("loggedInUser", JSON.stringify(userData));
 
   navigate("/login");
 
