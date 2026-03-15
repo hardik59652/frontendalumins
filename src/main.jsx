@@ -16,12 +16,16 @@ import GivingBackPage from './pages/givingback/GivingBack.jsx'
 import AlumniDirectory from './pages/alumindirectory/AluminDirectory.jsx';
 import Reunion from './pages/reunion/reunion.jsx';
 import NewsEventsPage from './pages/newsevents/NewsEvents.jsx';
-import AdminDashboard from "./pages/admindasahboard/AdminDashBoard.jsx";
-import AlumniDashboard from './pages/alumindashboard/AlumiinDashBoard.jsx';
+import AdminDashboard from "./pages/admindashboard/adminDashboard.jsx";
+import AlumniDashboard from './pages/alumindashboard/AlumniDashBoard.jsx';
+import PendingAchievements from "./pages/admindashboard/pendingAchievements.jsx";
+import AdminLayout from './pages/admindashboard/adminLayout.jsx'
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
+
       <Route index element={<Home />} />
       <Route path='about' element={<About />} />
       <Route path='contacts' element={<Contacts />} />
@@ -31,32 +35,32 @@ const router = createBrowserRouter(
       <Route path='opportunities' element={<Opportunities />} />
       <Route path='donation' element={<Donation />} />
       <Route path='givingback' element={<GivingBackPage />} />
-      <Route path="admin-dashboard" element={<AdminDashboard />} />
       <Route path="alumin-dashboard" element={<AlumniDashboard />} />
       <Route path="alumindirectory" element={<AlumniDirectory />} />
       <Route path="reunion" element={<Reunion />} />
       <Route path="newsevents" element={<NewsEventsPage />} />
-      
- 
 
-</Route>
+      {/* ADMIN ROUTES */}
 
-    
+      <Route path="admin-dashboard" element={<AdminLayout />}>
+
+        <Route index element={<AdminDashboard />} />
+
+        <Route 
+          path="pending-achievements" 
+          element={<PendingAchievements />} 
+        />
+
+      </Route>
+
+    </Route>
   )
 )
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router}/>
   </StrictMode>
 )
-// import React from 'react'
-// import ReactDOM from 'react-dom/client'
-// import App from './App.jsx'
-// import './index.css'
-
-// ReactDOM.createRoot(document.getElementById('root')).render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>,
-// )

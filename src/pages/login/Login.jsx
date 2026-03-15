@@ -23,54 +23,52 @@ function Login() {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
- const handleLogin = async (e) => {
-  e.preventDefault();
-
-  try {
-    const form = new FormData();
-    form.append("email", data.email);
-    form.append("password", data.password);
-
-    const response = await fetch("/api/v1/users/login", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  credentials: "include",
-  body: JSON.stringify({
-    email:data.email,
-    password:data.password
-  })
-})
-
-    const result = await response.json();
-    console.log(result);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+  
+    try {
    
-    if (response.ok) {
-
-  localStorage.setItem("user", JSON.stringify(result));
-
-  // registration wala name hata do
-  localStorage.removeItem("registeredName");
-
-  if (data.email.toLowerCase() === "admin@gmail.com") {
-    navigate("/admin-dashboard");
-  } else {
-    navigate("/alumin-dashboard");
-  }
-
-  window.location.reload();
-
-
+  
+      const response = await fetch("http://localhost:8000/api/v1/users/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email:data.email,
+      password:data.password
+    })
+  })
+  
+      const result = await response.json();
+      console.log(result);
+     
+      if (response.ok) {
+  
+    localStorage.setItem("user", JSON.stringify(result));
+  
+    // registration wala name hata do
+    localStorage.removeItem("registeredName");
+  
+    if (data.email.toLowerCase() === "admin@gmail.com") {
+      navigate("/admin-dashboard");
     } else {
-      alert(result.message || "Login failed");
+      navigate("/alumin-dashboard");
     }
-
-  } catch (error) {
-    console.log("LOGIN ERROR:", error);
-    alert("Server error");
-  }
-};
+  
+    window.location.reload();
+  
+  
+      } else {
+        alert(result.message || "Login failed");
+      }
+  
+    } catch (error) {
+      console.log("LOGIN ERROR:", error);
+      alert("Server error");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4 relative overflow-hidden">
