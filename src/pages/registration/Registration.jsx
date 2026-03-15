@@ -50,7 +50,7 @@ const handleSubmit = async (e) => {
       form.append("profileImage", profileImage);
     }
 
-    const response = await fetch("http://10.11.6.240:8000/api/v1/users/register", {
+    const response = await fetch("http://localhost:8000/api/v1/users/register", {
       method: "POST",
       body: form
     });
