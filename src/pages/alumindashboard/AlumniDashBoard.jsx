@@ -4,13 +4,24 @@ import { User, Briefcase, Bell, Settings, Award, MessageSquare, ChevronRight, St
 
 const AlumniDashboard = () => {
     const [user, setUser] = useState(null);
-useEffect(() => {
-  const storedUser = localStorage.getItem("loggedInUser");
-
-  if (storedUser) {
-    setUser(JSON.parse(storedUser));
-  }
-}, []);
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const res = await fetch("http://localhost:8000/api/v1/users/currentuser", {
+            method: "GET",
+            credentials: "include"   // IMPORTANT for cookies
+          });
+    
+          const data = await res.json();
+          setUser(data.data);
+    
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      };
+    
+      fetchUser();
+    }, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12 font-sans text-gray-900">
@@ -19,21 +30,22 @@ useEffect(() => {
       <div className="bg-[#1e40af] h-32 md:h-48 w-full relative">
         <div className="absolute -bottom-12 left-6 md:left-12 flex items-end gap-4">
           <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] border-4 border-white shadow-xl overflow-hidden">
-  {user?.photo ? (
+  {user?.profileImage ? (
     <img
-      src={user.photo}
+    src={`http://localhost:8000/${user.profileImage}`}
+     
       alt="profile"
       className="w-full h-full object-cover"
     />
   ) : (
     <div className="flex items-center justify-center w-full h-full text-blue-600 font-black text-4xl">
-      {user?.name?.charAt(0)}
+      {user?.fullName?.charAt(0)}
     </div>
   )}
 </div>
           <div className="mb-2">
-            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-gray-900 md:text-black">{user?.name}</h1>
-            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 md:text-blue-100">Class of {user?.batch} • {user?.department} Dept</p>
+            <h1 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-blue-900 md:text-black">{user?.fullName}</h1>
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-blue-900 md:text-blue-900">Class of {user?.graduationYear} • {user?.department} Dept</p>
           </div>
         </div>
       </div>
@@ -65,7 +77,7 @@ useEffect(() => {
           {/* Welcome Message */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden">
             <Star className="absolute -right-4 -top-4 w-24 h-24 opacity-10 rotate-12" />
-            <h2 className="text-2xl font-black uppercase tracking-tight mb-2">Welcome Back, {user?.name}!</h2>
+            <h2 className="text-2xl font-black uppercase tracking-tight mb-2">Welcome Back, {user?.fullName}!</h2>
             <p className="text-blue-100 text-sm opacity-80 italic">Check out the latest job openings from your seniors today.</p>
           </div>
 
