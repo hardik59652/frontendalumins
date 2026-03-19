@@ -20,8 +20,7 @@ import AdminDashboard from "./pages/admindashboard/adminDashboard.jsx";
 import AlumniDashboard from './pages/alumindashboard/AlumniDashBoard.jsx';
 import PendingAchievements from "./pages/admindashboard/pendingAchievements.jsx";
 import AdminLayout from './pages/admindashboard/adminLayout.jsx'
-
-
+import PendingOpportunities from './pages/admindashboard/pendingJobOpportunity.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -50,7 +49,7 @@ const router = createBrowserRouter(
           path="pending-achievements" 
           element={<PendingAchievements />} 
         />
-
+<Route path="pending-opportunities" element={<PendingOpportunities />} />
       </Route>
 
     </Route>
