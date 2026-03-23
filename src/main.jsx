@@ -22,6 +22,10 @@ import PendingAchievements from "./pages/admindashboard/pendingAchievements.jsx"
 import AdminLayout from './pages/admindashboard/adminLayout.jsx'
 import PendingOpportunities from './pages/admindashboard/pendingJobOpportunity.jsx'
 import ProtectedRoute from "./utils/ProtectedRoute";
+import ApplyJob from "./pages/opportunities/applyJob.jsx";
+import MyApplications from './pages/alumindashboard/myApplication.jsx'
+import JobApplicants from "./pages/alumindashboard/jobApplicants.jsx";
+import MyPostedJobs from './pages/alumindashboard/myPostedJobs.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -36,10 +40,14 @@ const router = createBrowserRouter(
       <Route path='donation' element={<ProtectedRoute><Donation /></ProtectedRoute>} />
       <Route path='givingback' element={<ProtectedRoute><GivingBackPage /></ProtectedRoute>} />
       <Route path="alumin-dashboard" element={<AlumniDashboard />} />
-      <Route path="/alumindirectory"element={<ProtectedRoute><AlumniDirectory /></ProtectedRoute>}/>
-      <Route path="/reunion"element={<ProtectedRoute><Reunion /></ProtectedRoute> }/>
-      <Route path="newsevents" element={<ProtectedRoute><NewsEventsPage /></ProtectedRoute>} />
-
+      <Route path="alumindirectory" element={<AlumniDirectory />} />
+      <Route path="reunion" element={<Reunion />} />
+      <Route path="newsevents" element={<NewsEventsPage />} />
+      <Route path="/apply/:jobId" element={<ApplyJob />} />
+      <Route path="/my-applications" element={<MyApplications />} />
+      <Route path="/dashboard" element={<AlumniDashboard />} />
+      <Route path="/my-posted-jobs" element={<MyPostedJobs />} />
+<Route path="/job-applications/:jobId" element={<JobApplicants />} />
       {/* ADMIN ROUTES */}
 
       <Route path="admin-dashboard" element={<AdminLayout />}>

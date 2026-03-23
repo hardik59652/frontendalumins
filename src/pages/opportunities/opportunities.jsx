@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Briefcase,
   MapPin,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 
 const Opportunities = () => {
-
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
@@ -237,14 +238,20 @@ const Opportunities = () => {
                         {job.salaryRange}
                       </span>
 
-                      <a
+                      <button
+                          onClick={() => navigate(`/apply/${job._id}`)}
+                          className="flex items-center gap-2 text-blue-600 font-bold text-xs"
+                        >
+                          Apply <ArrowUpRight size={18}/>
+                      </button>
+                      {/* <a
                         href={job.applyLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-blue-600 font-bold text-xs"
                       >
                         Apply <ArrowUpRight size={18}/>
-                      </a>
+                      </a> */}
 
                     </div>
 

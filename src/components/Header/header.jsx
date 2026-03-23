@@ -1,35 +1,73 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useState,useEffect } from "react";
+import { Link, NavLink ,useNavigate} from "react-router-dom";
 import { Menu, X, ChevronRight } from "lucide-react";
 
-
 export default function Header() {
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [user, setUser] = useState(null);
+
+  // ✅ UPDATE 1: navigate should be declared here (TOP of component)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  
+    const fetchUser = async () => {
+  
+      try {
+  
+        const res = await fetch(
+          "http://localhost:8000/api/v1/users/currentuser",
+          {
+            credentials: "include"
+          }
+        );
+  
+        const data = await res.json();
+  
+        if (data?.data) {
+          setUser(data.data);
+        }
+  
+      } catch (error) {
+        console.log("User not logged in");
+      }
+  
+    };
+  
+    fetchUser();
+  
+  }, []);
+
+
+ // ✅ UPDATE 2: fixed logout logic
  const handleLogout = async () => {
   try {
 
     const response = await fetch("http://localhost:8000/api/v1/users/logout", {
       method: "POST",
       credentials: "include"
-    })
-  
+    });
 
     const result = await response.json();
     console.log(result);
 
-    // local logout
-    localStorage.removeItem("user");
+    // ✅ UPDATE 3: clear user so dashboard button disappears
+    setUser(null);
 
-    // redirect
-    window.location.href = "/login";
+    // ✅ UPDATE 4: navigate to login
+    navigate("/login");
 
   } catch (error) {
+
     console.log("Logout error:", error);
 
+    setUser(null); // safety
     localStorage.removeItem("user");
-    window.location.href = "/login";
+
+    navigate("/login");
   }
 };
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const vgecLogo =
@@ -100,9 +138,21 @@ export default function Header() {
           </ul>
 
           {/* RIGHT BUTTONS */}
-{/* RIGHT BUTTONS */}
 
 <div className="hidden lg:flex items-center gap-3">
+
+{/* ✅ UPDATE 5: Dashboard button added */}
+
+{user && (
+
+<Link
+to="/dashboard"
+className="text-gray-800 hover:bg-gray-100 font-semibold rounded-lg text-sm px-4 py-2 transition"
+>
+Dashboard
+</Link>
+
+)}
 
 {user ? (
 
@@ -174,6 +224,20 @@ Registration
               ))}
 
            <div className="flex flex-col gap-3 px-4 mt-6">
+
+{/* ✅ UPDATE 6: Dashboard button also added in mobile */}
+
+{user && (
+
+<Link
+to="/dashboard"
+onClick={()=>setIsMenuOpen(false)}
+className="text-center py-3 font-semibold bg-gray-100 rounded-lg"
+>
+Dashboard
+</Link>
+
+)}
 
 {user ? (
 
