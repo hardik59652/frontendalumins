@@ -42,10 +42,12 @@ const About = () => {
             </h2>
             <div className="space-y-4 text-gray-600 leading-relaxed text-sm md:text-lg font-medium">
               <p>
-                Established in 1994 by the Government of Gujarat, VGEC (Chandkheda) has been a beacon of technical excellence. The Alumni Association was formed to foster a lifelong bond between the institute and its graduates.
+                Established in 1994 by the Government of Gujarat, VGEC (Chandkheda) has been a Vishwakarma Government Engineering College (VGEC), established in 1994 by the Government of Gujarat, is one of the prominent engineering institutes located in Chandkheda, Ahmedabad.
+
+The Alumni Association aims to connect former students with the institute and provide a platform for networking, mentorship, and collaboration between alumni and current students.
               </p>
               <p>
-                With over 25,000 alumni spread across the globe—from Silicon Valley to Ahmedabad—our network is one of the strongest engineering communities in the state.
+                Over the years, VGEC has produced graduates working across various industries including IT, core engineering, and startups. The alumni network continues to grow and plays an important role in guiding current students.
               </p>
             </div>
           </motion.div>
@@ -57,13 +59,14 @@ const About = () => {
             viewport={{ once: true }}
             className="bg-blue-50 rounded-[2.5rem] p-6 md:p-10 grid grid-cols-2 gap-4 shadow-inner"
           >
-            <StatBox icon={<Landmark size={28} />} count="30+" label="Years of Excellence" />
-            <StatBox icon={<Users size={28} />} count="25K+" label="Global Members" />
-            <StatBox icon={<Target size={28} />} count="500+" label="Mentors" />
-            <StatBox icon={<Award size={28} />} count="15+" label="Chapters" />
+           <StatBox icon={<Landmark />} count="1994" label="Established" />
+<StatBox icon={<Users />} count="Government of Gujarat" label="Founded By" />
+<StatBox icon={<Target />} count="Chandkheda" label="Location" />
+<StatBox icon={<Award />} count="Engineering Institute" label="Type" />
           </motion.div>
         </div>
       </section>
+      
 
       {/* 3. Core Values - Responsive Cards */}
       <section className="py-20 bg-gray-50 px-6 rounded-[3rem] md:rounded-none mx-2 md:mx-0">
@@ -76,7 +79,7 @@ const About = () => {
           <ValueCard 
             icon={<Target size={32} />} 
             title="Our Mission" 
-            desc="To create a platform where alumni can mentor current students, share industry knowledge, and contribute to the college's development."
+            desc="To build a strong connection between alumni and students by enabling knowledge sharing, mentorship, and career guidance."
           />
           <ValueCard 
             icon={<Award size={32} />} 
@@ -106,10 +109,11 @@ const About = () => {
           </blockquote>
           <div className="mt-8 flex flex-col items-center">
             <div className="h-1 w-12 bg-blue-600 mb-4 rounded-full"></div>
-            <span className="font-black text-blue-800 uppercase tracking-widest text-sm">— Principal, VGEC</span>
+            <span className="font-black text-blue-800 uppercase tracking-widest text-sm">— VGEC Alumni Association</span>
           </div>
         </motion.div>
       </section>
+      
     </div>
   );
 };

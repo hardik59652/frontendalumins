@@ -21,6 +21,7 @@ import AlumniDashboard from './pages/alumindashboard/AlumniDashBoard.jsx';
 import PendingAchievements from "./pages/admindashboard/pendingAchievements.jsx";
 import AdminLayout from './pages/admindashboard/adminLayout.jsx'
 import PendingOpportunities from './pages/admindashboard/pendingJobOpportunity.jsx'
+import ProtectedRoute from "./utils/ProtectedRoute";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -30,14 +31,14 @@ const router = createBrowserRouter(
       <Route path='contacts' element={<Contacts />} />
       <Route path='login' element={<Login />} />
       <Route path='register' element={<Register />} />
-      <Route path='achivements' element={<Achievements />} />
-      <Route path='opportunities' element={<Opportunities />} />
-      <Route path='donation' element={<Donation />} />
-      <Route path='givingback' element={<GivingBackPage />} />
+      <Route path='achivements' element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
+      <Route path='opportunities' element={<ProtectedRoute><Opportunities /></ProtectedRoute>} />
+      <Route path='donation' element={<ProtectedRoute><Donation /></ProtectedRoute>} />
+      <Route path='givingback' element={<ProtectedRoute><GivingBackPage /></ProtectedRoute>} />
       <Route path="alumin-dashboard" element={<AlumniDashboard />} />
-      <Route path="alumindirectory" element={<AlumniDirectory />} />
-      <Route path="reunion" element={<Reunion />} />
-      <Route path="newsevents" element={<NewsEventsPage />} />
+      <Route path="/alumindirectory"element={<ProtectedRoute><AlumniDirectory /></ProtectedRoute>}/>
+      <Route path="/reunion"element={<ProtectedRoute><Reunion /></ProtectedRoute> }/>
+      <Route path="newsevents" element={<ProtectedRoute><NewsEventsPage /></ProtectedRoute>} />
 
       {/* ADMIN ROUTES */}
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight, Eye, EyeOff, ShieldCheck, User } from "lucide-react";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ email: "", password: "" });
   const [registeredName, setRegisteredName] = useState("");
@@ -51,13 +52,14 @@ function Login() {
     // registration wala name hata do
     localStorage.removeItem("registeredName");
   
-    if (data.email.toLowerCase() === "admin@gmail.com") {
-      navigate("/admin-dashboard");
-    } else {
-      navigate("/alumin-dashboard");
-    }
-  
-    window.location.reload();
+   // previous page ya default
+const from = location.state?.from?.pathname || "/";
+
+if (result.user?.role === "admin") {
+  navigate("/admin-dashboard");
+} else {
+  navigate(from, { replace: true });
+}
   
   
       } else {
