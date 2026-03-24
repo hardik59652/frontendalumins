@@ -98,7 +98,7 @@ function AdminLayout() {
       icon: <CalendarDays size={20} />,
     },
     {
-      path: "/admin-dashboard/news",
+      path: "/admin-dashboard/manage-news",
       label: "Manage News",
       icon: <Newspaper size={20} />,
     },

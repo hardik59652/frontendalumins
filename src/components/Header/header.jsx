@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from "react";
-import { Link, NavLink ,useNavigate} from "react-router-dom";
+import React, { useState,useEffect,} from "react";
+import { Link, NavLink ,useNavigate,useLocation} from "react-router-dom";
 import { Menu, X, ChevronRight } from "lucide-react";
 
 export default function Header() {
@@ -8,6 +8,7 @@ export default function Header() {
 
   // ✅ UPDATE 1: navigate should be declared here (TOP of component)
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
   
@@ -36,7 +37,7 @@ export default function Header() {
   
     fetchUser();
   
-  }, []);
+  }, [location]);
 
 
  // ✅ UPDATE 2: fixed logout logic
@@ -146,10 +147,10 @@ export default function Header() {
 {user && (
 
 <Link
-to="/dashboard"
+to={user?.role === "admin" ? "/admin-dashboard" : "/alumni-dashboard"}
 className="text-gray-800 hover:bg-gray-100 font-semibold rounded-lg text-sm px-4 py-2 transition"
 >
-Dashboard
+{user?.role === "admin" ? "Admin Dashboard" : "Dashboard"}
 </Link>
 
 )}
