@@ -117,6 +117,16 @@ function AdminLayout() {
       label: "donations",
       icon: <Users size={20} />,
     },
+    {
+      path: "/admin-dashboard/reunion",
+      label: "reunion",
+      icon: <Users size={20} />,
+    },
+    {
+      path: "/admin-dashboard/giveback",
+      label: "giveback",
+      icon: <Users size={20} />,
+    },
   ];
 
   return (

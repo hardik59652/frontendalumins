@@ -1,86 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Users, Calendar, MapPin, Music, Sparkles, X, Heart, ChevronRight } from 'lucide-react';
+import { Camera, Users, Calendar, MapPin, Heart, X } from 'lucide-react';
+import axios from 'axios';
 
 const Reunion = () => {
   const [showRegModal, setShowRegModal] = useState(false);
+  const [reunion, setReunion] = useState(null);
+
+  // Fetch reunion from backend
+  const fetchReunion = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/api/v1/reunion', {
+        withCredentials: true
+      });
+      setReunion(res.data.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchReunion();
+  }, []);
+
 
   // Reunion Highlights (Enhanced Icons)
-  const highlights = [
-    { id: 1, title: "Gala Dinner", icon: <Music className="text-pink-500" size={28} /> },
-    { id: 2, title: "Campus Tour", icon: <MapPin className="text-blue-500" size={28} /> },
-    { id: 3, title: "Networking", icon: <Users className="text-green-500" size={28} /> },
-    { id: 4, title: "Award Ceremony", icon: <Sparkles className="text-yellow-500" size={28} /> }
-  ];
 
   return (
     <div className="min-h-screen bg-white pb-20 font-sans text-gray-900 overflow-x-hidden">
       
       {/* 1. HERO SECTION - Full View & Responsive */}
       <section className="relative h-[80vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-blue-950/70 z-10"></div>
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="relative z-20 text-center px-6"
-        >
-          <span className="bg-yellow-400 text-blue-900 px-6 py-2 rounded-full font-black uppercase text-[10px] md:text-xs tracking-widest mb-6 inline-block shadow-lg">
-            Silver Jubilee Meet • 2026
-          </span>
-          <h1 className="text-4xl md:text-8xl font-black text-white mb-6 uppercase tracking-tighter leading-none">
-            Back to <span className="text-blue-400">Roots</span>
-          </h1>
-          <p className="text-blue-50 text-base md:text-2xl max-w-3xl mx-auto font-medium italic opacity-90 leading-relaxed px-4">
-            "Work is Worship" — Relive the memories and people that shaped your legacy at VGEC.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 px-6">
-            <button 
-              onClick={() => setShowRegModal(true)}
-              className="bg-white text-blue-900 px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition shadow-2xl active:scale-95"
-            >
-              Reserve My Spot
-            </button>
-            <button className="border-2 border-white/40 text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-white hover:text-blue-900 transition active:scale-95 backdrop-blur-md">
-              View Schedule
-            </button>
-          </div>
-        </motion.div>
-      </section>
+  <div className="absolute inset-0 bg-blue-950/70 z-10"></div>
+  <div className="absolute inset-0 bg-cover bg-center" 
+       style={{ backgroundImage: `url(http://localhost:8000/${reunion?.bannerImage})` }}></div>
+
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 1 }}
+    className="relative z-20 text-center px-6"
+  >
+    <span className="bg-yellow-400 text-blue-900 px-6 py-2 rounded-full font-black uppercase text-[10px] md:text-xs tracking-widest mb-6 inline-block shadow-lg">
+      {reunion ? `Reunion • ${new Date(reunion.date).getFullYear()}` : 'Loading...'}
+    </span>
+    <h1 className="text-4xl md:text-8xl font-black text-white mb-6 uppercase tracking-tighter leading-none">
+      {reunion?.title || 'Back to Roots'}
+    </h1>
+    <p className="text-blue-50 text-base md:text-2xl max-w-3xl mx-auto font-medium italic opacity-90 leading-relaxed px-4">
+      {reunion?.description || '"Loading details...'}
+    </p>
+  </motion.div>
+</section>
 
       {/* 2. STATS/INFO BAR - Stackable on Mobile */}
       <div className="max-w-6xl mx-auto px-4 md:px-6 -mt-12 md:-mt-16 relative z-30">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          <InfoCard icon={<Calendar className="text-blue-600" size={32} />} title="When?" desc="25th Dec, 2026" />
-          <InfoCard icon={<MapPin className="text-red-500" size={32} />} title="Where?" desc="VGEC Campus, Chandkheda" />
-          <InfoCard icon={<Users className="text-green-500" size={32} />} title="Who?" desc="All Batches Welcome" />
-        </div>
-      </div>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
 
+    <InfoCard
+      icon={<Calendar className="text-blue-600" size={32} />}
+      title="When?"
+      desc={reunion ? new Date(reunion.date).toDateString() : "Loading..."}
+    />
+
+    <InfoCard
+      icon={<MapPin className="text-red-500" size={32} />}
+      title="Where?"
+      desc={reunion?.location || "Loading..."}
+    />
+
+    <InfoCard
+      icon={<Users className="text-green-500" size={32} />}
+      title="Who?"
+      desc="All Alumni Welcome"
+    />
+
+  </div>
+</div>
       {/* 3. REUNION HIGHLIGHTS - Responsive Grid */}
       <section className="py-20 md:py-32 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-4">What to Expect</h2>
-          <div className="h-2 w-16 bg-blue-600 mx-auto rounded-full"></div>
-        </div>
+  <div className="text-center mb-16">
+    <h2 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-4">What to Expect</h2>
+    <div className="h-2 w-16 bg-blue-600 mx-auto rounded-full"></div>
+  </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {highlights.map(item => (
-            <motion.div 
-              whileHover={{ y: -10 }}
-              key={item.id} 
-              className="text-center p-10 bg-gray-50 rounded-[3rem] hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-gray-100"
-            >
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md">
-                {item.icon}
-              </div>
-              <h3 className="font-black text-gray-900 uppercase text-xs tracking-widest">{item.title}</h3>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+    {reunion?.highlights?.map((item, index) => (
+      <motion.div 
+        whileHover={{ y: -10 }}
+        key={index}
+        className="text-center p-10 bg-gray-50 rounded-[3rem] hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-gray-100"
+      >
+        <h3 className="font-black text-gray-900 uppercase text-xs tracking-widest">{item.title}</h3>
+      </motion.div>
+    ))}
+  </div>
+</section>
 
       {/* 4. MEMORY LANE - Mobile Stacked View */}
       <section className="bg-gray-900 py-20 md:py-28 px-6 overflow-hidden">
