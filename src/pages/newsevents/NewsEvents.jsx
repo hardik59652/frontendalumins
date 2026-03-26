@@ -5,11 +5,14 @@ import {
   Newspaper, Bell, Sparkles, ChevronRight 
 } from 'lucide-react';
 
-const NewsEventsPage = () => {
 
+const NewsEventsPage = () => {
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [showEventModal, setShowEventModal] = useState(false);
   const [activeType, setActiveType] = useState("News");
-
+  const [eventsData, setEventsData] = useState([]);
   // ✅ NEW STATE FOR API DATA
   const [newsData, setNewsData] = useState([]);
 
@@ -48,17 +51,64 @@ const NewsEventsPage = () => {
     });
   };
 
-  // EVENTS STILL STATIC (for now)
-  const eventsData = [
-    {
-      id: 1,
-      title: "Annual Alumni Meet 2026",
-      date: "March 15, 2026",
-      location: "VGEC Main Auditorium",
-      time: "10:00 AM",
-      type: "Reunion"
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:8000/api/v1/events/published",
+          {
+            method: "GET",
+            credentials: "include"
+          }
+        );
+  
+        const data = await res.json();
+  
+        if (data?.data) {
+          setEventsData(data.data);
+        }
+  
+      } catch (error) {
+        console.log("Error fetching events:", error);
+      }
+    };
+  
+    fetchEvents();
+  }, []);
+  // register event
+  const registerForEvent = async () => {
+    if (!selectedEvent) return;
+  
+    try {
+      setLoading(true);
+  
+      const res = await fetch(
+        `http://localhost:8000/api/v1/events/register/${selectedEvent._id}`,
+        {
+          method: "POST",
+          credentials: "include"
+        }
+      );
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        alert(data.message);
+        setLoading(false);
+        return;
+      }
+  
+      alert("Successfully registered 🎉");
+  
+      setShowRegisterModal(false);
+  
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+ 
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 overflow-x-hidden">
@@ -111,7 +161,8 @@ const NewsEventsPage = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition group"
+                  className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition group"
+                  // className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition group"
                 >
                   <div className="h-56 overflow-hidden">
 
@@ -149,32 +200,134 @@ const NewsEventsPage = () => {
             </div>
           </div>
 
-          {/* EVENTS */}
-          <div className="lg:col-span-4 space-y-8">
-            <h2 className="text-3xl font-black flex items-center gap-3">
-              <Calendar size={28} className="text-blue-600" /> Events
-            </h2>
+{/* EVENTS */}
+<div className="lg:col-span-4 space-y-8">
 
-            {eventsData.map(event => (
-              <div key={event.id} className="bg-white p-5 rounded-xl shadow">
-                <h4 className="font-bold">{event.title}</h4>
-                <p className="text-sm text-gray-500">{event.date}</p>
-                <p className="text-sm text-gray-500 flex items-center gap-1">
-                  <MapPin size={14} /> {event.location}
-                </p>
-                <p className="text-sm text-gray-500 flex items-center gap-1">
-                  <Clock size={14} /> {event.time}
-                </p>
+  <h2 className="text-3xl font-black flex items-center gap-3">
+    <Calendar size={28} className="text-blue-600" /> Upcoming Events
+  </h2>
 
-                <button className="mt-3 w-full bg-blue-600 text-white py-2 rounded">
-                  Register
-                </button>
-              </div>
-            ))}
-          </div>
+  <div className="space-y-6">
+
+  {eventsData.length > 0 ? eventsData.map((event, i) => (
+
+    <motion.div
+      key={event._id}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.1 }}
+      className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition p-5 group"
+    >
+
+      {/* Event Image */}
+
+      <div className="h-40 rounded-xl overflow-hidden mb-4">
+
+        <img
+          src={`http://localhost:8000/${event.image}`}
+          alt={event.title}
+          className="w-full h-full object-cover group-hover:scale-110 transition"
+        />
+
+      </div>
+
+      {/* Title */}
+
+      <h4 className="font-bold text-lg mb-2">
+        {event.title}
+      </h4>
+
+      {/* Date */}
+
+      <p className="text-sm text-gray-500 flex items-center gap-2 mb-1">
+        <Calendar size={14}/> {formatDate(event.eventDate)}
+      </p>
+
+      {/* Location */}
+
+      <p className="text-sm text-gray-500 flex items-center gap-2 mb-1">
+        <MapPin size={14}/> {event.location}
+      </p>
+
+      {/* Time */}
+
+      <p className="text-sm text-gray-500 flex items-center gap-2 mb-4">
+        <Clock size={14}/> {event.time}
+      </p>
+
+      {/* Register */}
+
+<button
+onClick={()=>{
+  setSelectedEvent(event);
+  setShowRegisterModal(true);
+}}
+className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-1"
+>
+Register <ChevronRight size={16} />
+</button>
+ 
+    </motion.div>
+
+  )) : (
+
+    <p className="text-gray-400">No upcoming events</p>
+
+  )}
+
+  </div>
+
+</div>
 
         </div>
       </div>
+    
+      <AnimatePresence>
+{showRegisterModal && (
+
+<div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+<motion.div
+initial={{ scale:0.9, opacity:0 }}
+animate={{ scale:1, opacity:1 }}
+exit={{ scale:0.9, opacity:0 }}
+className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl"
+>
+
+<h2 className="text-lg font-bold mb-3">
+Confirm Registration
+</h2>
+
+<p className="text-sm text-gray-600 mb-6">
+Are you sure you want to register for  
+<span className="font-semibold"> {selectedEvent?.title}</span> ?
+</p>
+
+<div className="flex gap-3 justify-end">
+
+<button
+onClick={()=>setShowRegisterModal(false)}
+className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-100"
+>
+Cancel
+</button>
+
+<button
+onClick={registerForEvent}
+disabled={loading}
+className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+>
+{loading ? "Registering..." : "Yes, Register"}
+</button>
+
+</div>
+
+</motion.div>
+
+</div>
+
+)}
+</AnimatePresence>
 
       {/* MODAL (unchanged UI) */}
       <AnimatePresence>

@@ -1,149 +1,238 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Landmark, ShieldCheck, Wallet, ChevronRight, Gift, Award, CheckCircle } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Heart,
+  Landmark,
+  ShieldCheck,
+  Wallet,
+  ChevronRight,
+  Gift,
+  Award,
+  CheckCircle
+} from "lucide-react";
 
 const Donation = () => {
-  const [selectedAmount, setSelectedAmount] = useState(null);
-  const amounts = [1000, 5000, 10000, 25000];
 
+  const [campaigns, setCampaigns] = useState([]);
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [amount, setAmount] = useState("");
+
+  // FETCH ACTIVE CAMPAIGNS
+  const fetchCampaigns = async () => {
+    try {
+
+      const res = await fetch(
+        "http://localhost:8000/api/v1/campaign/active",
+        {
+          credentials: "include"
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setCampaigns(data.data);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCampaigns();
+  }, []);
+  const handleDonation = async () => {
+
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid donation amount");
+      return;
+    }
+  
+    try {
+  
+      const res = await fetch(
+        "http://localhost:8000/api/v1/donation/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include", // cookie authentication
+          body: JSON.stringify({
+            campaignId: selectedCampaign._id,
+            amount: Number(amount)
+          })
+        }
+      );
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+  
+        alert("Donation successful ❤️");
+  
+        setSelectedCampaign(null);
+        setAmount("");
+  
+        // refresh campaigns progress
+        fetchCampaigns();
+  
+      } else {
+        alert(data.message || "Donation failed");
+      }
+  
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900 overflow-x-hidden">
-      
-      {/* 1. Hero Section - Responsive Padding */}
-      <section className="bg-[#1e40af] text-white py-16 md:py-24 px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <Landmark className="absolute -left-10 -bottom-10 w-48 h-48 md:w-64 md:h-64 rotate-12" />
+
+      {/* HERO SECTION */}
+
+      <section className="bg-[#1e40af] text-white py-20 px-6 text-center relative overflow-hidden">
+
+        <div className="absolute inset-0 opacity-10">
+          <Landmark className="absolute -left-10 -bottom-10 w-64 h-64 rotate-12" />
         </div>
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative z-10"
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
         >
-          <Heart className="mx-auto mb-4 md:mb-6 text-red-400 fill-red-400 animate-pulse" size={48} md={56} />
-          <h1 className="text-3xl md:text-6xl font-black mb-4 uppercase tracking-tighter leading-tight">
-            Give Back to <span className="text-blue-300">VGEC</span>
+
+          <Heart className="mx-auto mb-6 text-red-400 fill-red-400 animate-pulse" size={56} />
+
+          <h1 className="text-5xl font-black mb-4 uppercase">
+            Support <span className="text-blue-300">VGEC</span>
           </h1>
-          <p className="max-w-xl mx-auto text-blue-100 text-sm md:text-lg font-medium opacity-90 italic px-2">
-            "Work is Worship" — Your contribution empowers the next generation of engineers at our Chandkheda campus.
+
+          <p className="max-w-xl mx-auto text-blue-100 italic">
+            Your contribution empowers the next generation of engineers.
           </p>
+
         </motion.div>
+
       </section>
 
-      {/* 2. Main Content - Responsive Grid */}
-      <div className="max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
-        
-        {/* Left Side: Impact Cards */}
-        <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="space-y-8 md:space-y-10"
-        >
-          <div>
-            <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight mb-4 md:mb-6">
-              Your Impact
-            </h2>
-            <p className="text-gray-600 text-sm md:text-lg leading-relaxed italic">
-              Established in 1994, VGEC has been a home to thousands. Today, you can help us maintain that excellence.
-            </p>
-          </div>
+      {/* CAMPAIGNS */}
 
-          <div className="grid gap-4 md:gap-6">
-            <ImpactCard 
-              icon={<Award size={24} />} 
-              title="Scholarships" 
-              desc="Financial aid for meritorious students from weaker sections." 
-            />
-            <ImpactCard 
-              icon={<ShieldCheck size={24} />} 
-              title="Infrastructure" 
-              desc="Upgrading labs and research facilities with latest tech." 
-            />
-            <ImpactCard 
-              icon={<Gift size={24} />} 
-              title="Innovation Fund" 
-              desc="Funding student startups representing VGEC globally." 
-            />
-          </div>
-        </motion.div>
+      <div className="max-w-7xl mx-auto py-20 px-6">
 
-        {/* 3. Right Side: Donation Form Card */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white p-6 md:p-10 rounded-[2.5rem] md:rounded-[3rem] shadow-2xl border border-gray-100 relative"
-        >
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 md:px-8 py-1.5 md:py-2 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest shadow-lg flex items-center gap-2">
-            <CheckCircle size={14} /> Secure Donation
-          </div>
+        <h2 className="text-4xl font-black mb-10 text-center">
+          Active Campaigns
+        </h2>
 
-          <h3 className="text-xl md:text-2xl font-black mb-8 flex items-center gap-3 text-gray-900 uppercase tracking-tight">
-            <Wallet className="text-blue-600" size={28} /> Support Us
-          </h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          {/* Amount Selection - Mobile Optimized Grid */}
-          <div className="grid grid-cols-2 gap-3 md:gap-4 mb-8 md:mb-10">
-            {amounts.map((amt) => (
-              <button
-                key={amt}
-                onClick={() => setSelectedAmount(amt)}
-                className={`p-4 md:p-5 rounded-2xl font-black text-base md:text-lg border-4 transition-all active:scale-95 ${
-                  selectedAmount === amt 
-                  ? "border-blue-600 bg-blue-50 text-blue-600" 
-                  : "border-gray-50 bg-gray-50 text-gray-400 hover:border-blue-200"
-                }`}
+          {campaigns.map((campaign) => {
+
+            const progress =
+              (campaign.currentAmount / campaign.targetAmount) * 100;
+
+            return (
+
+              <motion.div
+                key={campaign._id}
+                whileHover={{ y: -5 }}
+                className="bg-white rounded-3xl shadow-xl p-8 border"
               >
-                ₹{amt.toLocaleString()}
-              </button>
-            ))}
-          </div>
 
-          <form className="space-y-5 md:space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Custom Amount (₹)</label>
-              <input 
-                type="number" 
-                placeholder="Enter any other amount" 
-                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 transition-all font-bold text-base md:text-lg"
-              />
-            </div>
+                <h3 className="text-xl font-bold mb-2">
+                  {campaign.title}
+                </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                <input type="text" placeholder="Alumni`s Name" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-medium" required />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Batch (Year)</label>
-                <input type="number" placeholder="Alumni`s Batch" min="1994" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-medium" required />
-              </div>
-            </div>
+                <p className="text-gray-500 text-sm mb-6">
+                  {campaign.description}
+                </p>
 
-            <button type="submit" className="w-full bg-blue-600 text-white py-4 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-lg md:text-xl hover:bg-blue-700 transition-all shadow-xl hover:shadow-blue-200 flex items-center justify-center gap-2 md:gap-3 active:scale-[0.98]">
-              Contribute Now <ChevronRight size={20} strokeWidth={3} />
-            </button>
-          </form>
+                {/* PROGRESS BAR */}
 
-          <p className="text-center text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-6 md:mt-8 px-4">
-            Contributions are 80G Tax Exempted • Secure via Razorpay
-          </p>
-        </motion.div>
+                <div className="mb-3">
+
+                  <div className="flex justify-between text-sm font-semibold mb-1">
+                    <span>₹{campaign.currentAmount}</span>
+                    <span>₹{campaign.targetAmount}</span>
+                  </div>
+
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+
+                    <div
+                      className="bg-blue-600 h-3 rounded-full"
+                      style={{ width: `${progress}%` }}
+                    />
+
+                  </div>
+
+                </div>
+
+                <p className="text-xs text-gray-400 mb-6">
+                  Ends on{" "}
+                  {new Date(campaign.endDate).toLocaleDateString()}
+                </p>
+
+                <button
+                  onClick={() => setSelectedCampaign(campaign)}
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition"
+                >
+                  Donate
+                </button>
+
+              </motion.div>
+
+            );
+
+          })}
+
+        </div>
+
       </div>
+
+      {/* DONATION FORM */}
+
+      {selectedCampaign && (
+
+<div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+  <div className="bg-white rounded-3xl p-10 w-full max-w-md relative">
+
+    <button
+      onClick={() => setSelectedCampaign(null)}
+      className="absolute top-4 right-4 text-gray-500 hover:text-black"
+    >
+      ✕
+    </button>
+
+    <h3 className="text-2xl font-black mb-6 flex items-center gap-2">
+      <Wallet className="text-blue-600" />
+      Donate to {selectedCampaign.title}
+    </h3>
+
+    <input
+      type="number"
+      placeholder="Enter amount"
+      value={amount}
+      onChange={(e) => setAmount(e.target.value)}
+      className="w-full p-4 border rounded-xl mb-6"
+    />
+
+    <button
+      onClick={handleDonation}
+      className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 flex items-center justify-center gap-2"
+    >
+      Contribute Now <ChevronRight size={20} />
+    </button>
+
+  </div>
+
+</div>
+
+)}
+
     </div>
   );
 };
-
-// --- Helper Component ---
-const ImpactCard = ({ icon, title, desc }) => (
-  <div className="bg-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border-l-8 border-blue-600 hover:shadow-xl transition-all group">
-    <div className="flex items-center gap-4 mb-2 md:mb-3">
-      <div className="text-blue-600 group-hover:scale-110 transition-transform">{icon}</div>
-      <h3 className="font-black text-lg md:text-xl text-gray-900 uppercase tracking-tight">{title}</h3>
-    </div>
-    <p className="text-gray-500 text-xs md:text-sm font-medium leading-relaxed">{desc}</p>
-  </div>
-);
 
 export default Donation;

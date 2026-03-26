@@ -107,6 +107,16 @@ function AdminLayout() {
       label: "Manage Users",
       icon: <Users size={20} />,
     },
+    {
+      path: "/admin-dashboard/campagin",
+      label: "camagin",
+      icon: <Users size={20} />,
+    },
+    {
+      path: "/admin-dashboard/donation",
+      label: "donations",
+      icon: <Users size={20} />,
+    },
   ];
 
   return (

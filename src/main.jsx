@@ -27,6 +27,11 @@ import MyApplications from './pages/alumindashboard/myApplication.jsx'
 import JobApplicants from "./pages/alumindashboard/jobApplicants.jsx";
 import MyPostedJobs from './pages/alumindashboard/myPostedJobs.jsx'
 import News from './pages/admindashboard/news.jsx'
+import ManageEvents from "./pages/admindashboard/manageEvents.jsx";
+import MyEvents from './pages/alumindashboard/myevents.jsx'
+import Campaign from './pages/admindashboard/campagin.jsx'
+import MyDonations from './pages/alumindashboard/mydonations.jsx'
+import AdminDonations from './pages/admindashboard/donation.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -36,10 +41,10 @@ const router = createBrowserRouter(
       <Route path='contacts' element={<Contacts />} />
       <Route path='login' element={<Login />} />
       <Route path='register' element={<Register />} />
-      <Route path='achivements' element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
-      <Route path='opportunities' element={<ProtectedRoute><Opportunities /></ProtectedRoute>} />
-      <Route path='donation' element={<ProtectedRoute><Donation /></ProtectedRoute>} />
-      <Route path='givingback' element={<ProtectedRoute><GivingBackPage /></ProtectedRoute>} />
+      <Route path='achivements' element={<Achievements />}/>
+      <Route path='opportunities' element={<Opportunities />} />
+      <Route path='donation' element={<Donation />} />
+      <Route path='givingback' element={<GivingBackPage />} />
       <Route path="alumni-dashboard" element={<AlumniDashboard />} />
       <Route path="alumindirectory" element={<AlumniDirectory />} />
       <Route path="reunion" element={<Reunion />} />
@@ -49,6 +54,8 @@ const router = createBrowserRouter(
       {/* <Route path="/dashboard" element={<AlumniDashboard />} /> */}
       <Route path="/my-posted-jobs" element={<MyPostedJobs />} />
 <Route path="/job-applications/:jobId" element={<JobApplicants />} />
+<Route path="/dashboard/events" element={< MyEvents/>} />
+<Route path="/my-donation" element={<MyDonations />} />
       {/* ADMIN ROUTES */}
 
       <Route path="admin-dashboard" element={<AdminLayout />}>
@@ -61,6 +68,10 @@ const router = createBrowserRouter(
         />
 <Route path="pending-opportunities" element={<PendingOpportunities />} />
 <Route path="manage-news" element={<News />} />
+
+<Route path="campagin" element={<Campaign />} />
+<Route path="donation" element={<AdminDonations />} />
+<Route path="/admin-dashboard/events" element={<ManageEvents />} />
 
       </Route>
 

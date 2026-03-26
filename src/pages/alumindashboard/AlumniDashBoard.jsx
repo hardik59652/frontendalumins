@@ -82,6 +82,16 @@ const AlumniDashboard = () => {
   label="Messages"
   path="/messages"
 />
+<DashboardLink 
+  icon={<MessageSquare size={18}/>} 
+  label="my donations"
+  path="/my-donation"
+/>
+<DashboardLink 
+  icon={<Bell size={18}/>} 
+  label="My Events"
+  path="/dashboard/events"
+/>
 
 <DashboardLink 
   icon={<Settings size={18}/>} 

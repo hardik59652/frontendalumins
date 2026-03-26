@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { UploadCloud, CheckCircle } from "lucide-react";
 
 const News = () => {
 
@@ -10,14 +11,14 @@ const News = () => {
 
   const fetchNews = async () => {
     try {
+
       const res = await axios.get(
         "http://localhost:8000/api/v1/news/admin/all",
-        {
-          withCredentials: true
-        }
+        { withCredentials: true }
       );
 
       setNewsList(res.data.data);
+
     } catch (err) {
       console.log(err);
     }
@@ -28,6 +29,7 @@ const News = () => {
   }, []);
 
   const handleCreateNews = async (e) => {
+
     e.preventDefault();
 
     const formData = new FormData();
@@ -36,14 +38,13 @@ const News = () => {
     formData.append("image", image);
 
     try {
+
       await axios.post(
         "http://localhost:8000/api/v1/news/create",
         formData,
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+          headers: { "Content-Type": "multipart/form-data" }
         }
       );
 
@@ -58,84 +59,173 @@ const News = () => {
   };
 
   const handlePublish = async (id) => {
+
     try {
+
       await axios.patch(
         `http://localhost:8000/api/v1/news/publish/${id}`,
         {},
-        {
-          withCredentials: true
-        }
+        { withCredentials: true }
       );
 
       fetchNews();
+
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <div className="p-6">
 
-      <h1 className="text-2xl font-bold mb-4">Create News</h1>
+    <div className="space-y-10">
 
-      <form onSubmit={handleCreateNews} className="space-y-4">
+      {/* CREATE NEWS */}
 
-        <input
-          type="text"
-          placeholder="News Title"
-          className="border p-2 w-full"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+      <div className="bg-white rounded-2xl shadow-lg p-6">
 
-        <textarea
-          placeholder="Description"
-          className="border p-2 w-full"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
-
-        <button className="bg-blue-500 text-white px-4 py-2">
+        <h2 className="text-2xl font-bold mb-6">
           Create News
-        </button>
+        </h2>
 
-      </form>
+        <form
+          onSubmit={handleCreateNews}
+          className="grid md:grid-cols-2 gap-6"
+        >
 
-      <hr className="my-6"/>
+          <input
+            type="text"
+            placeholder="News Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="border p-3 rounded-lg"
+          />
 
-      <h2 className="text-xl font-bold mb-4">All News</h2>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="border p-3 rounded-lg"
+          />
 
-      {newsList.map((news) => (
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            className="border p-3 rounded-lg md:col-span-2"
+          />
 
-        <div key={news._id} className="border p-4 mb-4">
+          <button
+            type="submit"
+            className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 md:col-span-2"
+          >
+            <UploadCloud size={18} />
+            Create News
+          </button>
 
-          <h3 className="font-bold">{news.title}</h3>
+        </form>
 
-          <p>{news.description}</p>
+      </div>
 
-          <p className="text-sm text-gray-500">
-            Published: {news.isPublished ? "Yes" : "No"}
-          </p>
 
-          {!news.isPublished && (
-            <button
-              onClick={() => handlePublish(news._id)}
-              className="bg-green-500 text-white px-3 py-1 mt-2"
-            >
-              Publish
-            </button>
-          )}
+      {/* NEWS LIST */}
+
+      <div className="bg-white rounded-2xl shadow-lg p-6">
+
+        <h2 className="text-2xl font-bold mb-6">
+          All News
+        </h2>
+
+        <div className="overflow-x-auto">
+
+          <table className="w-full">
+
+            <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
+
+              <tr>
+                <th className="p-4 text-left">Title</th>
+                <th className="p-4 text-left">Description</th>
+                <th className="p-4 text-left">Image</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-center">Action</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {newsList.map((news) => (
+
+                <tr
+                  key={news._id}
+                  className="border-b hover:bg-gray-50"
+                >
+
+                  <td className="p-4 font-semibold">
+                    {news.title}
+                  </td>
+
+                  <td className="p-4 text-gray-600">
+                    {news.description}
+                  </td>
+
+                  <td className="p-4">
+
+                    {news.image && (
+                      <img
+                        src={`http://localhost:8000/${news.image}`}
+                        alt="news"
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                    )}
+
+                  </td>
+
+                  <td className="p-4">
+
+                    {news.isPublished ? (
+                      <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+                        Published
+                      </span>
+                    ) : (
+                      <span className="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full">
+                        Draft
+                      </span>
+                    )}
+
+                  </td>
+
+                  <td className="p-4 text-center">
+
+                    {!news.isPublished && (
+
+                      <button
+                        onClick={() => handlePublish(news._id)}
+                        className="flex items-center gap-2 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700"
+                      >
+                        <CheckCircle size={16} />
+                        Publish
+                      </button>
+
+                    )}
+
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
 
         </div>
 
-      ))}
+      </div>
 
     </div>
+
   );
 };
 
