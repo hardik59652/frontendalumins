@@ -1,144 +1,122 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Award, Target, Users, Landmark, Sparkles, Quote } from 'lucide-react';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       
-      {/* 1. Header Section - Dynamic & Responsive */}
-      <section className="relative bg-[#1e40af] text-white py-16 md:py-28 px-6 text-center overflow-hidden">
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
-            <Landmark size={400} />
-        </div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10"
-        >
-          <h1 className="text-3xl md:text-6xl font-black mb-6 uppercase tracking-tighter leading-tight">
-            About Our <span className="text-blue-300">Legacy</span>
+      {/* 1. Header Section - Solid & Corporate */}
+      <section className="bg-blue-800 text-white py-16 md:py-24 px-6 text-center border-b-4 border-blue-600">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 uppercase tracking-wide">
+            About Our Legacy
           </h1>
-          <p className="max-w-2xl mx-auto text-blue-100 text-base md:text-xl font-medium italic opacity-90">
+          <p className="text-blue-200 text-sm md:text-base font-medium">
             Connecting the past, present, and future of Vishwakarma Government Engineering College since 1994.
           </p>
-        </motion.div>
+        </div>
       </section>
 
-      {/* 2. History & Mission - Responsive Grid */}
-      <section className="py-16 md:py-24 max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-2xl md:text-4xl font-black text-gray-900 mb-6 border-l-8 border-blue-600 pl-4 uppercase tracking-tight leading-none">
-              Our Journey <br /> <span className="text-blue-600 italic">Since 1994</span>
+      {/* 2. History & Mission - Standard Grid Layout */}
+      <section className="py-12 md:py-16 max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          
+          {/* Text Content */}
+          <div className="bg-white p-8 border border-gray-200 shadow-sm h-full">
+            <h2 className="text-2xl font-bold text-blue-900 mb-6 uppercase border-b border-gray-200 pb-3">
+              Our Journey Since 1994
             </h2>
-            <div className="space-y-4 text-gray-600 leading-relaxed text-sm md:text-lg font-medium">
+            <div className="space-y-4 text-gray-600 text-sm leading-relaxed">
               <p>
-                Established in 1994 by the Government of Gujarat, VGEC (Chandkheda) has been a Vishwakarma Government Engineering College (VGEC), established in 1994 by the Government of Gujarat, is one of the prominent engineering institutes located in Chandkheda, Ahmedabad.
-
-The Alumni Association aims to connect former students with the institute and provide a platform for networking, mentorship, and collaboration between alumni and current students.
+                Vishwakarma Government Engineering College (VGEC), established in 1994 by the Government of Gujarat, is one of the prominent engineering institutes located in Chandkheda, Ahmedabad.
               </p>
               <p>
-                Over the years, VGEC has produced graduates working across various industries including IT, core engineering, and startups. The alumni network continues to grow and plays an important role in guiding current students.
+                The Alumni Association aims to connect former students with the institute and provide a platform for networking, mentorship, and collaboration between alumni and current students.
+              </p>
+              <p>
+                Over the years, VGEC has produced graduates working across various industries including IT, core engineering, and startups. The alumni network continues to grow and plays an important role in guiding current students towards successful careers.
               </p>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Stats Grid - Optimized for Mobile (2x2) */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="bg-blue-50 rounded-[2.5rem] p-6 md:p-10 grid grid-cols-2 gap-4 shadow-inner"
-          >
-           <StatBox icon={<Landmark />} count="1994" label="Established" />
-<StatBox icon={<Users />} count="Government of Gujarat" label="Founded By" />
-<StatBox icon={<Target />} count="Chandkheda" label="Location" />
-<StatBox icon={<Award />} count="Engineering Institute" label="Type" />
-          </motion.div>
-        </div>
-      </section>
-      
+          {/* Stats Grid - Boxy & Clean */}
+          <div className="grid grid-cols-2 gap-4 h-full">
+            <StatBox icon={<Landmark size={24}/>} count="1994" label="Established" />
+            <StatBox icon={<Users size={24}/>} count="Govt. of Gujarat" label="Founded By" />
+            <StatBox icon={<Target size={24}/>} count="Chandkheda" label="Location" />
+            <StatBox icon={<Award size={24}/>} count="Engineering Institute" label="Type" />
+          </div>
 
-      {/* 3. Core Values - Responsive Cards */}
-      <section className="py-20 bg-gray-50 px-6 rounded-[3rem] md:rounded-none mx-2 md:mx-0">
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 uppercase tracking-tighter">What Drives Us</h2>
-          <div className="h-1.5 w-16 bg-blue-600 mx-auto mt-4 rounded-full"></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-          <ValueCard 
-            icon={<Target size={32} />} 
-            title="Our Mission" 
-            desc="To build a strong connection between alumni and students by enabling knowledge sharing, mentorship, and career guidance."
-          />
-          <ValueCard 
-            icon={<Award size={32} />} 
-            title="Excellence" 
-            desc="Promoting technical innovation and professional growth through regular webinars, workshops, and annual reunions."
-          />
-          <ValueCard 
-            icon={<Sparkles size={32} />} 
-            title="Community" 
-            desc="Strengthening the bond among alumni globally and providing a support system for career advancement and networking."
-          />
         </div>
       </section>
 
-      {/* 4. Quote Section - Centered & Bold */}
-      <section className="py-24 text-center px-6 relative overflow-hidden">
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 opacity-5">
-            <Quote size={120} className="text-blue-900" />
+      {/* 3. Core Values - Simple Cards */}
+      <section className="py-12 bg-white border-t border-gray-200 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-10 text-center">
+            <h2 className="text-2xl font-bold text-gray-800 uppercase tracking-wide">What Drives Us</h2>
+            <div className="h-1 w-16 bg-blue-700 mx-auto mt-3"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <ValueCard 
+              icon={<Target size={28} className="text-blue-700" />} 
+              title="Our Mission" 
+              desc="To build a strong connection between alumni and students by enabling knowledge sharing, mentorship, and career guidance."
+            />
+            <ValueCard 
+              icon={<Award size={28} className="text-blue-700" />} 
+              title="Excellence" 
+              desc="Promoting technical innovation and professional growth through regular webinars, workshops, and annual reunions."
+            />
+            <ValueCard 
+              icon={<Sparkles size={28} className="text-blue-700" />} 
+              title="Community" 
+              desc="Strengthening the bond among alumni globally and providing a support system for career advancement and networking."
+            />
+          </div>
         </div>
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="max-w-4xl mx-auto"
-        >
-          <blockquote className="text-xl md:text-3xl font-black text-gray-800 leading-tight italic uppercase tracking-tight">
+      </section>
+
+      {/* 4. Quote Section - Traditional Blockquote */}
+      <section className="py-16 bg-gray-100 border-t border-gray-200 px-6 text-center">
+        <div className="max-w-3xl mx-auto">
+          <Quote size={40} className="text-gray-300 mx-auto mb-4" />
+          <blockquote className="text-lg md:text-xl font-semibold text-gray-700 leading-relaxed italic mb-6">
             "The strength of the institute lies in the success of its students. We don't just build engineers; we build a legacy."
           </blockquote>
-          <div className="mt-8 flex flex-col items-center">
-            <div className="h-1 w-12 bg-blue-600 mb-4 rounded-full"></div>
-            <span className="font-black text-blue-800 uppercase tracking-widest text-sm">— VGEC Alumni Association</span>
+          <div className="inline-block border-t border-gray-300 pt-4">
+            <span className="font-bold text-blue-900 uppercase text-xs tracking-wider">
+              — VGEC Alumni Association
+            </span>
           </div>
-        </motion.div>
+        </div>
       </section>
       
     </div>
   );
 };
 
-// --- Helper Components ---
+// --- Helper Components (Standard HTML-like structure) ---
 
 const StatBox = ({ icon, count, label }) => (
-  <div className="bg-white p-5 md:p-8 rounded-[2rem] shadow-sm text-center flex flex-col items-center justify-center hover:shadow-md transition-shadow group">
-    <div className="text-blue-600 mb-2 group-hover:scale-110 transition-transform">{icon}</div>
-    <div className="font-black text-xl md:text-3xl text-gray-900">{count}</div>
-    <div className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 leading-tight">{label}</div>
+  <div className="bg-white p-6 border border-gray-200 shadow-sm text-center flex flex-col items-center justify-center">
+    <div className="text-blue-800 mb-3">{icon}</div>
+    <div className="font-bold text-lg text-gray-800 mb-1 leading-tight">{count}</div>
+    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</div>
   </div>
 );
 
 const ValueCard = ({ icon, title, desc }) => (
-  <motion.div 
-    whileHover={{ y: -10 }}
-    className="bg-white p-10 rounded-[2.5rem] shadow-sm border-b-8 border-blue-600 text-center md:text-left group"
-  >
-    <div className="text-blue-600 mb-6 bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto md:mx-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">{icon}</div>
-    <h3 className="text-xl md:text-2xl font-black mb-4 uppercase tracking-tight text-gray-900">{title}</h3>
-    <p className="text-gray-500 font-medium leading-relaxed italic text-sm md:text-base">
+  <div className="bg-gray-50 p-8 border border-gray-200 flex flex-col items-start">
+    <div className="mb-4 bg-white p-3 border border-gray-200 shadow-sm inline-block">
+      {icon}
+    </div>
+    <h3 className="text-lg font-bold uppercase text-gray-800 mb-3">{title}</h3>
+    <p className="text-gray-600 text-sm leading-relaxed">
       {desc}
     </p>
-  </motion.div>
+  </div>
 );
 
 export default About;

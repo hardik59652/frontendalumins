@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { 
-  User, Mail, Lock, Phone, GraduationCap, 
-  Building2, MapPin, Linkedin, Briefcase, 
-  Camera, ChevronRight, Hash, Calendar 
-} from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+
+// Developer: Yash Patel
+// Last Update: Connected with User Auth API
+// TODO: Add OTP verification next month
+
 const Register = () => {
   const navigate = useNavigate();
 
-const [profileImage,setProfileImage]=useState(null)
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -23,250 +21,177 @@ const [profileImage,setProfileImage]=useState(null)
     location: "",
     linkedinUrl: ""
   });
+  
+  const [profileImage, setProfileImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const departments = [
     "Computer Engineering", "Information Technology",
     "Electronics & Communication", "Mechanical Engineering",
     "Civil Engineering", "Instrumentation & Control", "Chemical Engineering"
   ];
-
+  
+  // Generate years from 1994 to 2026
   const years = Array.from({ length: 2026 - 1994 + 1 }, (_, i) => 1994 + i).reverse();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    setErrorMsg(""); // clear error when typing
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const form = new FormData();
-
-    Object.keys(formData).forEach((key) => {
-      form.append(key, formData[key]);
-    });
-
-    if (profileImage) {
-      form.append("profileImage", profileImage);
-    }
-
-    const response = await fetch("http://localhost:8000/api/v1/users/register", {
-      method: "POST",
-      body: form
-    });
-
-    console.log("STATUS:", response.status);
-
-    const text = await response.text(); 
-    console.log("RESPONSE:", text);
-
-if (response.ok) {
-
-  alert("Registration Successful! Please login.");
-
-  const userData = {
-    name: formData.fullName,
-    batch: formData.graduationYear,
-    department: formData.department,
-    photo: profileImage ? URL.createObjectURL(profileImage) : null
+  const handleFile = (e) => {
+    setProfileImage(e.target.files[0]);
   };
 
-  localStorage.setItem("loggedInUser", JSON.stringify(userData));
-
-  navigate("/login");
-
-}
-    else {
-      alert("Backend returned error");
+  const registerUser = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Manual basic validation
+    if(formData.password.length < 6) {
+      setErrorMsg("Password must be at least 6 characters.");
+      setLoading(false);
+      return;
     }
 
-  } catch (error) {
-    console.log("FETCH ERROR:", error);
-    alert("Server error");
-  }
-};
+    try {
+      const data = new FormData();
+      for (const key in formData) {
+        data.append(key, formData[key]);
+      }
+      if (profileImage) {
+        data.append("profileImage", profileImage);
+      }
 
+      console.log("Sending registration request...");
 
+      const response = await fetch("http://localhost:8000/api/v1/users/register", {
+        method: "POST",
+        body: data
+      });
 
-      
+      if (response.ok) {
+        alert("Registration successful! You can now login.");
+        localStorage.setItem("registeredName", formData.fullName);
+        navigate("/login");
+      } else {
+        const result = await response.json();
+        setErrorMsg(result.message || "Registration failed. Try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Server connection failed. Is backend running?");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center px-4 py-12 md:py-20 relative overflow-hidden">
-
-      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-100 rounded-full blur-[120px] opacity-50" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-100 rounded-full blur-[120px] opacity-50" />
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-4xl bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white overflow-hidden z-10"
-      >
-
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter">
-            Join the <span className="text-blue-200">Legacy</span>
-          </h2>
-          <p className="mt-2 text-blue-100 text-[10px] md:text-xs font-black uppercase tracking-[0.3em] opacity-80 italic">
-            VGEC Alumni Association Registration
-          </p>
+    <div className="min-h-screen bg-gray-50 py-10 font-sans text-gray-800">
+      <div className="max-w-3xl mx-auto bg-white p-8 shadow-sm border border-gray-200">
+        
+        <div className="mb-8 border-b border-gray-200 pb-4">
+          <h2 className="text-2xl font-bold text-blue-900 uppercase">Alumni Registration Form</h2>
+          <p className="text-sm text-gray-500 mt-1">Please fill in your authentic details to join the VGEC network.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 md:p-12">
+        {errorMsg && (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-6 text-sm">
+            {errorMsg}
+          </div>
+        )}
 
-          {/* PERSONAL DETAILS */}
-          <div className="mb-10">
-            <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-              <User size={14}/> Step 1: Personal Identity
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-              <input
-                name="fullName"
-                placeholder="Full Name"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                className="input"
-              />
-
-              <input
-                name="email"
-                type="email"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="input"
-              />
-
-              <input
-                name="password"
-                type="password"
-                placeholder="Create Password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="input"
-              />
-
-              <input
-                name="phoneNumber"
-                placeholder="Mobile Number"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                required
-                className="input"
-              />
-<input 
-type="file"
-accept="image/*"
-onChange={(e)=>setProfileImage(e.target.files[0])}
-/>
+        <form onSubmit={registerUser}>
+          
+          {/* --- Section 1 --- */}
+          <h3 className="text-lg font-semibold bg-gray-100 p-2 mb-4 text-gray-700">1. Personal Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium mb-1">Full Name <span className="text-red-500">*</span></label>
+              <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Email Address <span className="text-red-500">*</span></label>
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Password <span className="text-red-500">*</span></label>
+              <input type="password" name="password" value={formData.password} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Phone Number <span className="text-red-500">*</span></label>
+              <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1">Profile Photo</label>
+              <input type="file" accept="image/*" onChange={handleFile} className="w-full border border-gray-300 p-1 text-sm bg-gray-50" />
             </div>
           </div>
 
-          {/* ACADEMIC DETAILS */}
-          <div className="mb-10">
-            <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-              <GraduationCap size={14}/> Step 2: Academic Roots
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-              <input
-                name="enrollmentNumber"
-                placeholder="Enrollment Number"
-                value={formData.enrollmentNumber}
-                onChange={handleChange}
-                required
-                className="input"
-              />
-
-              <select
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                required
-                className="input"
-              >
-                <option value="">Select Department</option>
-                {departments.map((d)=>(
-                  <option key={d} value={d}>{d}</option>
-                ))}
+          {/* --- Section 2 --- */}
+          <h3 className="text-lg font-semibold bg-gray-100 p-2 mb-4 text-gray-700">2. College Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium mb-1">Enrollment Number <span className="text-red-500">*</span></label>
+              <input type="text" name="enrollmentNumber" value={formData.enrollmentNumber} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Department <span className="text-red-500">*</span></label>
+              <select name="department" value={formData.department} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500 bg-white">
+                <option value="">-- Select Department --</option>
+                {departments.map((dep) => <option key={dep} value={dep}>{dep}</option>)}
               </select>
-
-              <select
-                name="graduationYear"
-                value={formData.graduationYear}
-                onChange={handleChange}
-                required
-                className="input"
-              >
-                <option value="">Graduation Year</option>
-                {years.map((y)=>(
-                  <option key={y} value={y}>{y}</option>
-                ))}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Graduation Year <span className="text-red-500">*</span></label>
+              <select name="graduationYear" value={formData.graduationYear} onChange={handleInputChange} required className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500 bg-white">
+                <option value="">-- Select Year --</option>
+                {years.map((year) => <option key={year} value={year}>{year}</option>)}
               </select>
-
             </div>
           </div>
 
-          {/* PROFESSIONAL DETAILS */}
-          <div className="mb-10">
-            <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-              <Briefcase size={14}/> Step 3: Professional Journey
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-              <input
-                name="currentCompany"
-                placeholder="Current Organization"
-                value={formData.currentCompany}
-                onChange={handleChange}
-                className="input"
-              />
-
-              <input
-                name="jobTitle"
-                placeholder="Current Job Title"
-                value={formData.jobTitle}
-                onChange={handleChange}
-                className="input"
-              />
-
-              <input
-                name="location"
-                placeholder="City / Country"
-                value={formData.location}
-                onChange={handleChange}
-                className="input"
-              />
-
-              <input
-                name="linkedinUrl"
-                placeholder="LinkedIn URL"
-                value={formData.linkedinUrl}
-                onChange={handleChange}
-                className="input"
-              />
-
+          {/* --- Section 3 --- */}
+          <h3 className="text-lg font-semibold bg-gray-100 p-2 mb-4 text-gray-700">3. Current Status (Optional)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div>
+              <label className="block text-sm font-medium mb-1">Current Company</label>
+              <input type="text" name="currentCompany" value={formData.currentCompany} onChange={handleInputChange} className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Job Title</label>
+              <input type="text" name="jobTitle" value={formData.jobTitle} onChange={handleInputChange} className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Location (City)</label>
+              <input type="text" name="location" value={formData.location} onChange={handleInputChange} className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">LinkedIn Profile</label>
+              <input type="text" name="linkedinUrl" value={formData.linkedinUrl} onChange={handleInputChange} className="w-full border border-gray-300 p-2 focus:outline-none focus:border-blue-500" />
             </div>
           </div>
 
-          {/* BUTTON */}
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-            type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em]"
-          >
-            Create Alumni Profile <ChevronRight size={18}/>
-          </motion.button>
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+            <Link to="/login" className="text-blue-600 text-sm hover:underline">
+              Already registered? Login here.
+            </Link>
+            <button 
+              type="submit" 
+              disabled={loading}
+              className={`bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-8 shadow-sm transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {loading ? "Registering..." : "Submit Registration"}
+            </button>
+          </div>
 
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 };

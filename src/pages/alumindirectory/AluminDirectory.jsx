@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, MapPin, Briefcase, GraduationCap, Mail, Linkedin, UserCircle } from 'lucide-react';
 
+// Developer: Yash Patel
+// Description: Global Alumni Directory Module
+
 const AlumniDirectory = () => {
 
   const initialAlumni = [
@@ -14,10 +17,11 @@ const AlumniDirectory = () => {
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDept, setSelectedDept] = useState("All");
+  const [selectedDept, setSelectedDept] = useState("All Departments");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const departments = [
-    "All",
+    "All Departments",
     "Computer Engineering",
     "Information Technology",
     "Electronics & Communication",
@@ -27,200 +31,192 @@ const AlumniDirectory = () => {
   ];
 
   const filteredAlumni = initialAlumni.filter(alumnus => {
-
     const matchesSearch =
       alumnus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       alumnus.company.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesDept =
-      selectedDept === "All" || alumnus.dept === selectedDept;
+      selectedDept === "All Departments" || alumnus.dept === selectedDept;
 
     return matchesSearch && matchesDept;
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 font-sans text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 pb-20 font-sans text-gray-800 overflow-x-hidden">
 
-      {/* HERO */}
-      <section className="bg-[#1e40af] text-white pt-16 pb-24 md:pt-20 md:pb-28 px-6 text-center relative overflow-hidden">
-
+      {/* --- HEADER SECTION --- */}
+      <section className="bg-blue-800 text-white py-12 px-6 shadow-sm border-b-4 border-blue-600 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <UserCircle className="absolute -right-10 -bottom-10 w-64 h-64" />
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative z-10"
-        >
-          <h1 className="text-3xl md:text-6xl font-black mb-4 uppercase tracking-tighter leading-tight">
-            Alumni <span className="text-blue-300">Directory</span>
-          </h1>
-
-          <p className="max-w-2xl mx-auto text-blue-100 text-sm md:text-lg font-medium opacity-90 italic px-2">
-            Connect with thousands of VGECians globally and strengthen your professional network.
-          </p>
-        </motion.div>
-
+        <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+            <h1 className="text-3xl font-bold uppercase tracking-wide flex items-center gap-3">
+              <UsersIcon size={32} className="text-blue-300" />
+              Alumni Directory
+            </h1>
+            <p className="mt-2 text-blue-200 text-sm font-medium">
+              Connect with thousands of VGECians globally and strengthen your professional network.
+            </p>
+          </motion.div>
+        </div>
       </section>
 
+      {/* --- UNIFIED SEARCH BAR --- */}
+      <div className="max-w-4xl mx-auto px-6 mt-8 relative z-20">
+        <form className="relative" onSubmit={(e) => e.preventDefault()}>
+          <div className="flex shadow-sm rounded-lg -space-x-px">
+            
+            {/* Department Dropdown Button */}
+            <button 
+              type="button" 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="inline-flex items-center shrink-0 z-10 bg-gray-50 border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-100 font-medium rounded-l-lg text-sm px-4 py-2.5 focus:outline-none transition-colors"
+            >
+              <Filter className="w-4 h-4 me-1.5 text-gray-400" />
+              <span className="hidden sm:inline">{selectedDept}</span>
+              <span className="sm:hidden">Dept</span>
+              <svg className="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/></svg>
+            </button>
 
-      {/* SEARCH + FILTER */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
-
-        <div className="bg-white p-4 md:p-6 rounded-[2rem] shadow-2xl border border-gray-100 -mt-10 md:-mt-14 relative z-20">
-
-          <div className="flex flex-col lg:flex-row items-center gap-4">
-
-            {/* SEARCH BAR FIXED */}
-            <div className="flex items-center w-full lg:flex-1 bg-gray-50 rounded-2xl px-4 py-4">
-
-              <Search className="text-gray-400 mr-3 flex-shrink-0" size={18} />
-
-              <input
-                type="text"
-                placeholder="Search by name or company..."
-                className="bg-transparent outline-none w-full font-bold text-sm"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-            </div>
-
-
-            <div className="hidden lg:block w-px h-10 bg-gray-200 mx-2"></div>
-
-
-            {/* DEPARTMENT FILTER */}
-            <div className="w-full lg:w-auto">
-
-              <div className="relative">
-
-                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-
-                <select
-                  className="w-full lg:w-56 pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-gray-600 text-sm cursor-pointer appearance-none"
-                  onChange={(e) => setSelectedDept(e.target.value)}
-                  value={selectedDept}
+            {/* Dropdown Menu (Animated) */}
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.15 }}
+                  className="absolute z-20 top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-64 max-h-60 overflow-y-auto"
                 >
-                  {departments.map(dept => (
-                    <option key={dept} value={dept}>
-                      {dept}
-                    </option>
-                  ))}
-                </select>
-
-              </div>
-
+                  <ul className="p-2 text-sm text-gray-700 font-medium">
+                    {departments.map((dept) => (
+                      <li key={dept}>
+                        <button
+                          type="button"
+                          onClick={() => { setSelectedDept(dept); setIsDropdownOpen(false); }}
+                          className="block w-full text-left p-2 hover:bg-gray-100 hover:text-blue-700 rounded-md transition-colors"
+                        >
+                          {dept}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            {/* Search Input */}
+            <div className="relative w-full">
+              <input 
+                type="search" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="px-3 py-2.5 bg-white border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 block w-full outline-none" 
+                placeholder="Search by name, company..." 
+              />
             </div>
 
+            {/* Search Button */}
+            <button 
+              type="button" 
+              className="inline-flex items-center shrink-0 text-white bg-blue-700 hover:bg-blue-800 border border-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-r-lg text-sm px-5 py-2.5 focus:outline-none transition-colors z-10"
+            >
+              <Search className="w-4 h-4 me-1.5 hidden sm:inline" />
+              Search
+            </button>
           </div>
-
-        </div>
-
+        </form>
       </div>
 
+      {/* --- ALUMNI GRID --- */}
+      <section className="max-w-6xl mx-auto py-10 px-6">
+        
+        <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
+           <h2 className="text-lg font-bold uppercase text-gray-800 flex items-center gap-2">
+             Results <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">{filteredAlumni.length}</span>
+           </h2>
+        </div>
 
-      {/* ALUMNI GRID */}
-      <section className="max-w-7xl mx-auto py-12 md:py-16 px-4 md:px-6">
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
-
             {filteredAlumni.length > 0 ? (
-
               filteredAlumni.map((alumnus) => (
-
                 <motion.div
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                   key={alumnus.id}
-                  className="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-50 shadow-sm hover:shadow-2xl transition-all duration-300 group"
+                  className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col group"
                 >
-
-                  <div className="flex items-center gap-4 md:gap-5 mb-6">
-
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-blue-50 rounded-2xl md:rounded-full flex items-center justify-center text-blue-600 font-black text-xl md:text-2xl border-4 border-white shadow-md group-hover:bg-blue-600 group-hover:text-white transition-all">
+                  {/* Profile Header */}
+                  <div className="flex items-start gap-4 mb-5 border-b border-gray-100 pb-4">
+                    <div className="w-16 h-16 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-blue-700 font-bold text-xl uppercase shrink-0">
                       {alumnus.name.charAt(0)}
                     </div>
-
                     <div>
-                      <h3 className="text-lg md:text-xl font-black text-gray-900 uppercase tracking-tight">
+                      <h3 className="text-lg font-bold text-gray-900 leading-tight">
                         {alumnus.name}
                       </h3>
-
-                      <span className="text-blue-600 text-[10px] md:text-xs font-black tracking-widest uppercase">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 mt-1">
                         Class of {alumnus.batch}
-                      </span>
+                      </p>
                     </div>
-
                   </div>
 
-
-                  <div className="space-y-3 mb-8 px-1">
-
+                  {/* Profile Details */}
+                  <div className="space-y-3 mb-6 flex-1">
                     <InfoItem icon={<GraduationCap size={16} />} text={alumnus.dept} />
                     <InfoItem icon={<Briefcase size={16} />} text={alumnus.company} />
                     <InfoItem icon={<MapPin size={16} />} text={alumnus.location} />
-
                   </div>
 
-
+                  {/* Actions */}
                   <div className="flex gap-3 mt-auto">
-
                     <a
                       href={`mailto:${alumnus.email}`}
-                      className="flex-1 bg-gray-50 text-gray-700 py-3.5 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="flex-1 bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-xs uppercase tracking-wide hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
                     >
                       <Mail size={14}/> Contact
                     </a>
-
-                    <button className="p-3.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                      <Linkedin size={18}/>
+                    <button className="px-4 py-2 bg-blue-50 border border-blue-100 text-blue-700 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors">
+                      <Linkedin size={16}/>
                     </button>
-
                   </div>
-
                 </motion.div>
-
               ))
-
             ) : (
-
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="col-span-full text-center py-20 bg-white rounded-[2rem] md:rounded-[3rem] shadow-inner border border-dashed border-gray-200"
+                className="col-span-full text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm"
               >
-
-                <h2 className="text-xl font-black text-gray-400 italic uppercase tracking-tighter">
+                <Search size={40} className="mx-auto text-gray-300 mb-3" />
+                <h2 className="text-lg font-bold text-gray-600 uppercase tracking-wide">
                   No Alumni Found
                 </h2>
-
-                <p className="text-gray-400 text-xs font-medium mt-1">
-                  Try adjusting your search or filters.
+                <p className="text-gray-500 text-sm mt-1">
+                  Try adjusting your search criteria or department filter.
                 </p>
-
               </motion.div>
-
             )}
-
           </AnimatePresence>
-
-        </div>
-
+        </motion.div>
       </section>
 
     </div>
   );
 };
 
+/* --- Custom Lucide Icon Import --- */
+const UsersIcon = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+);
 
 const InfoItem = ({ icon, text }) => (
-  <div className="flex items-center gap-3 text-[11px] md:text-sm font-bold text-gray-500 italic">
-    <span className="text-blue-500">{icon}</span> {text}
+  <div className="flex items-start gap-3 text-sm text-gray-600 font-medium">
+    <span className="text-gray-400 mt-0.5">{icon}</span> 
+    <span className="leading-snug">{text}</span>
   </div>
 );
 

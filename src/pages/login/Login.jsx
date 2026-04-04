@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
+  const [registeredName, setRegisteredName] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({
@@ -30,7 +32,7 @@ function Login() {
           headers: {
             "Content-Type": "application/json"
           },
-          credentials: "include", // important for cookies
+          credentials: "include",
           body: JSON.stringify({
             email: data.email,
             password: data.password
@@ -44,7 +46,7 @@ function Login() {
       if (response.ok) {
         const user = result.data?.user;
 
-        // role based navigation
+
         if (user?.role === "admin") {
           navigate("/admin-dashboard", { replace: true });
         } else if (user?.role === "alumni") {
@@ -62,116 +64,149 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center font-sans text-gray-800 p-4">
+      <div className="w-full max-w-md bg-white p-8 shadow-sm border border-gray-200">
+        <div className="mb-8 border-b border-gray-200 pb-4 text-center">
+          <h2 className="text-2xl font-bold text-blue-900 uppercase tracking-wide">
 
-      {/* Background blur */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-100 rounded-full blur-[120px] opacity-50" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-100 rounded-full blur-[120px] opacity-50" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white p-8 md:p-10 z-10"
-      >
-
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200">
-            <ShieldCheck className="text-white" size={32} />
-          </div>
-
-          <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">
-            Welcome <span className="text-blue-600">Back</span>
+            {registeredName ? `Welcome, ${registeredName}` : "Alumni Login"}
           </h2>
-
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">
-            VGEC Alumni Portal Login
+          <p className="text-sm text-gray-500 mt-2">
+            Secure access to the VGEC Alumni Portal
           </p>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-6">
-
-          {/* Email */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-              Email Address
-            </label>
-
-            <div className="flex items-center bg-gray-50 rounded-2xl px-4 border border-transparent focus-within:ring-2 focus-within:ring-blue-500 focus-within:bg-white transition-all group">
-              <Mail className="text-gray-400 group-focus-within:text-blue-600 transition-colors" size={18} />
-
-              <input
-                name="email"
-                type="email"
-                placeholder="name@example.com"
-                onChange={handleChange}
-                required
-                className="w-full py-4 pl-3 bg-transparent outline-none font-bold text-sm text-gray-700 placeholder:text-gray-400"
-              />
-            </div>
+        {errorMsg && (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-6 text-sm">
+            {errorMsg}
           </div>
 
-          {/* Password */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-              Password
-            </label>
+        )}
+        <form onSubmit={handleLogin}>
+          <div className="mb-5">
+            <label className="block text-sm font-medium mb-1 text-gray-700">Email Address</label>
+            <input
+              name="email"
+              type="email"
+              value={data.email}
+              onChange={handleChange}
+              placeholder="Enter your registered email"
+              required
 
-            <div className="flex items-center bg-gray-50 rounded-2xl px-4 border border-transparent focus-within:ring-2 focus-within:ring-blue-500 focus-within:bg-white transition-all group relative">
-              <Lock className="text-gray-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+              className="w-full border border-gray-300 p-2.5 focus:outline-none focus:border-blue-500 text-sm"
+
+            />
+
+          </div>
+
+
+
+          <div className="mb-6">
+
+            <div className="flex justify-between items-center mb-1">
+
+              <label className="block text-sm font-medium text-gray-700">Password</label>
+
+              <a href="#" className="text-xs text-blue-600 hover:underline">Forgot password?</a>
+
+            </div>
+
+            <div className="relative">
 
               <input
+
                 name="password"
+
                 type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
+
+                value={data.password}
+
                 onChange={handleChange}
+
+                placeholder="Enter your password"
+
                 required
-                className="w-full py-4 pl-3 bg-transparent outline-none font-bold text-sm text-gray-700 placeholder:text-gray-400"
+
+                className="w-full border border-gray-300 p-2.5 pr-10 focus:outline-none focus:border-blue-500 text-sm"
+
               />
 
               <button
+
                 type="button"
+
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-400 hover:text-blue-600 transition-colors"
+
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-500 hover:text-blue-600 font-medium"
+
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+
+                {showPassword ? "HIDE" : "SHOW"}
+
               </button>
+
             </div>
+
           </div>
 
-          {/* Submit */}
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
+
+
+          <button
+
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-200 flex items-center justify-center gap-2 active:bg-blue-800 transition-all"
+
+            disabled={loading}
+
+            className={`w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 shadow-sm transition-colors uppercase text-sm tracking-wider ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+
           >
-            Sign In <ArrowRight size={18} />
-          </motion.button>
+
+            {loading ? "Authenticating..." : "Login to Portal"}
+
+          </button>
+
+
 
         </form>
 
-        {/* Footer */}
-        <div className="text-center mt-8 space-y-2">
-          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-            New to the network?{" "}
-            <a
-              href="/register"
-              className="text-blue-600 hover:underline transition-all"
-            >
-              Create Account
-            </a>
+
+
+        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+
+          <p className="text-sm text-gray-600">
+
+            Don't have an account?{" "}
+
+            <Link to="/register" className="text-blue-700 font-semibold hover:underline">
+
+              Register here
+
+            </Link>
+
           </p>
 
-          <p className="text-[9px] font-medium text-gray-300 uppercase tracking-tighter">
-            VGEC Alumni Association © 2026
-          </p>
         </div>
 
-      </motion.div>
+
+
+      </div>
+
+
+
+      <div className="mt-6 text-center text-xs text-gray-400">
+
+        &copy; 2026 VGEC Alumni Association. All rights reserved.
+
+      </div>
+
+
+
     </div>
+
   );
+
 }
+
+
 
 export default Login;
