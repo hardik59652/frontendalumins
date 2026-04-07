@@ -13,9 +13,6 @@ import {
   Lock
 } from "lucide-react";
 
-// Developer: Yash Patel
-// Description: Official Alumni Fundraising & Donation Module
-
 const Donation = () => {
 
   const [campaigns, setCampaigns] = useState([]);
@@ -24,7 +21,6 @@ const Donation = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // FETCH ACTIVE CAMPAIGNS
   const fetchCampaigns = async () => {
     try {
       const res = await fetch(
@@ -68,7 +64,7 @@ const Donation = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          credentials: "include", // cookie authentication
+          credentials: "include",
           body: JSON.stringify({
             campaignId: selectedCampaign._id,
             amount: donationAmount
@@ -82,7 +78,7 @@ const Donation = () => {
         alert("Thank you! Your donation was successful. ❤️");
         setSelectedCampaign(null);
         setAmount("");
-        fetchCampaigns(); // Refresh progress
+        fetchCampaigns(); 
       } else {
         setErrorMsg(data.message || "Transaction failed. Please try again.");
       }
@@ -97,7 +93,6 @@ const Donation = () => {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-20">
 
-      {/* --- HERO SECTION --- */}
       <section className="bg-blue-800 text-white py-14 px-6 border-b-4 border-blue-600">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex-1">
@@ -121,8 +116,7 @@ const Donation = () => {
         </div>
       </section>
 
-      {/* --- CAMPAIGNS GRID --- */}
-      <section className="max-w-6xl mx-auto px-6 mt-10">
+      <section className="max-w-7xl mx-auto px-6 mt-10">
         <div className="mb-6 flex items-center justify-between border-b border-gray-200 pb-3">
            <h2 className="text-2xl font-bold uppercase text-gray-900 flex items-center gap-2 tracking-wide">
              Active Campaigns <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">{campaigns.length}</span>
@@ -137,7 +131,7 @@ const Donation = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {campaigns.map((campaign) => {
-              // Calculate progress percentage securely
+           
               const rawProgress = (campaign.currentAmount / campaign.targetAmount) * 100;
               const progress = Math.min(Math.max(rawProgress, 0), 100); // Clamp between 0 and 100
 
@@ -154,7 +148,6 @@ const Donation = () => {
                       {campaign.description}
                     </p>
 
-                    {/* PROGRESS BAR SECTION */}
                     <div className="mt-auto">
                       <div className="flex justify-between items-end mb-1.5">
                         <div className="flex flex-col">
@@ -197,21 +190,17 @@ const Donation = () => {
           </div>
         )}
       </section>
-
-      {/* --- SECURE DONATION MODAL --- */}
       {selectedCampaign && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           
-          {/* Backdrop */}
+       
           <div 
             className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
             onClick={() => setSelectedCampaign(null)}
           />
 
-          {/* Modal Container */}
           <div className="bg-white rounded-lg w-full max-w-md shadow-2xl relative z-10 flex flex-col overflow-hidden">
             
-            {/* Modal Header */}
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <div>
                 <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2">
@@ -229,7 +218,6 @@ const Donation = () => {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-6">
               
               {errorMsg && (

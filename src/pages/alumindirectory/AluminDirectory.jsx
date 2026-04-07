@@ -1,21 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, Mail, Linkedin, UserCircle } from 'lucide-react';
-
-// Developer: Yash Patel
-// Description: Global Alumni Directory Module
+import { Filter, MapPin, Briefcase, GraduationCap, Mail, Linkedin, Search, ChevronDown, Users } from 'lucide-react';
+import axios from 'axios';
 
 const AlumniDirectory = () => {
-
-  const initialAlumni = [
-    { id: 1, name: "Yash", batch: "2024", dept: "Information Technology", company: "Google", location: "Bangalore", email: "yash@example.com" },
-    { id: 2, name: "Hardik Shah", batch: "2018", dept: "Computer Engineering", company: "Microsoft", location: "Hyderabad", email: "hardik@example.com" },
-    { id: 3, name: "Anjali Vyas", batch: "2020", dept: "Electronics & Communication", company: "ISRO", location: "Ahmedabad", email: "anjali@example.com" },
-    { id: 4, name: "Sneha Patel", batch: "2015", dept: "Civil Engineering", company: "L&T Construction", location: "Mumbai", email: "sneha@example.com" },
-    { id: 5, name: "Rahul Mehta", batch: "2022", dept: "Mechanical Engineering", company: "Tesla", location: "California", email: "rahul@example.com" },
-    { id: 6, name: "Jevik", batch: "2023", dept: "Instrumentation & Control", company: "Reliance", location: "Jamnagar", email: "jevik@example.com" }
-  ];
-
+  const [alumniData, setAlumniData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDept, setSelectedDept] = useState("All Departments");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -30,30 +21,50 @@ const AlumniDirectory = () => {
     "Instrumentation & Control"
   ];
 
-  const filteredAlumni = initialAlumni.filter(alumnus => {
-    const matchesSearch =
-      alumnus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      alumnus.company.toLowerCase().includes(searchTerm.toLowerCase());
+  const fetchAlumni = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/v1/users/", {
+        withCredentials: true
+      });
+      if (res.data?.data) {
+        setAlumniData(res.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const matchesDept =
-      selectedDept === "All Departments" || alumnus.dept === selectedDept;
+  useEffect(() => {
+    fetchAlumni();
 
-    return matchesSearch && matchesDept;
+    const intervalId = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchAlumni();
+    }, 15000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const filteredAlumni = alumniData.filter(alumnus => {
+    const searchMatch = 
+      (alumnus.fullName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (alumnus.companyName?.toLowerCase() || "").includes(searchTerm.toLowerCase());
+
+    const deptMatch = 
+      selectedDept === "All Departments" || alumnus.department === selectedDept;
+
+    return searchMatch && deptMatch;
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 font-sans text-gray-800 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 pb-20 font-sans text-gray-900 selection:bg-blue-100">
 
-      {/* --- HEADER SECTION --- */}
-      <section className="bg-blue-800 text-white py-12 px-6 shadow-sm border-b-4 border-blue-600 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <UserCircle className="absolute -right-10 -bottom-10 w-64 h-64" />
-        </div>
-
+      <section className="bg-blue-800 text-white py-14 px-6 border-b-4 border-blue-600 relative">
         <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }} className="w-full">
             <h1 className="text-3xl font-bold uppercase tracking-wide flex items-center gap-3">
-              <UsersIcon size={32} className="text-blue-300" />
+              <Users size={32} className="text-blue-300" />
               Alumni Directory
             </h1>
             <p className="mt-2 text-blue-200 text-sm font-medium">
@@ -63,37 +74,35 @@ const AlumniDirectory = () => {
         </div>
       </section>
 
-      {/* --- UNIFIED SEARCH BAR --- */}
-      <div className="max-w-4xl mx-auto px-6 mt-8 relative z-20">
-        <form className="relative" onSubmit={(e) => e.preventDefault()}>
-          <div className="flex shadow-sm rounded-lg -space-x-px">
-            
-            {/* Department Dropdown Button */}
+      <div className="max-w-4xl mx-auto px-6 -mt-8 relative z-20">
+        <form className="bg-white p-2 border border-gray-200 shadow-md rounded flex flex-col sm:flex-row" onSubmit={(e) => e.preventDefault()}>
+          
+          <div className="relative sm:w-64 shrink-0">
             <button 
               type="button" 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="inline-flex items-center shrink-0 z-10 bg-gray-50 border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-100 font-medium rounded-l-lg text-sm px-4 py-2.5 focus:outline-none transition-colors"
+              className="w-full flex items-center justify-between bg-gray-50 border border-gray-300 hover:bg-gray-100 text-gray-800 font-bold text-[11px] uppercase tracking-wider px-4 py-3 rounded transition-colors outline-none"
             >
-              <Filter className="w-4 h-4 me-1.5 text-gray-400" />
-              <span className="hidden sm:inline">{selectedDept}</span>
-              <span className="sm:hidden">Dept</span>
-              <svg className="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/></svg>
+              <div className="flex items-center gap-2">
+                <Filter size={14} className="text-gray-500" />
+                <span className="truncate">{selectedDept}</span>
+              </div>
+              <ChevronDown size={14} className={`text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Dropdown Menu (Animated) */}
             <AnimatePresence>
               {isDropdownOpen && (
                 <motion.div 
-                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.15 }}
-                  className="absolute z-20 top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-64 max-h-60 overflow-y-auto"
+                  initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} transition={{ duration: 0.1 }}
+                  className="absolute z-50 top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg w-full max-h-60 overflow-y-auto"
                 >
-                  <ul className="p-2 text-sm text-gray-700 font-medium">
+                  <ul className="p-1">
                     {departments.map((dept) => (
                       <li key={dept}>
                         <button
                           type="button"
                           onClick={() => { setSelectedDept(dept); setIsDropdownOpen(false); }}
-                          className="block w-full text-left p-2 hover:bg-gray-100 hover:text-blue-700 rounded-md transition-colors"
+                          className="w-full text-left px-3 py-2 text-[11px] font-bold text-gray-700 uppercase tracking-wide hover:bg-gray-50 hover:text-blue-700 transition-colors"
                         >
                           {dept}
                         </button>
@@ -103,120 +112,118 @@ const AlumniDirectory = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-            
-            {/* Search Input */}
+          </div>
+
+          <div className="relative w-full mt-2 sm:mt-0 sm:ml-2 flex">
             <div className="relative w-full">
+             
               <input 
                 type="search" 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="px-3 py-2.5 bg-white border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 block w-full outline-none" 
+                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none rounded-l placeholder:text-gray-400" 
                 placeholder="Search by name, company..." 
               />
             </div>
-
-            {/* Search Button */}
             <button 
-              type="button" 
-              className="inline-flex items-center shrink-0 text-white bg-blue-700 hover:bg-blue-800 border border-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-r-lg text-sm px-5 py-2.5 focus:outline-none transition-colors z-10"
+              type="submit" 
+              className="bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-r transition-colors shrink-0"
             >
-              <Search className="w-4 h-4 me-1.5 hidden sm:inline" />
               Search
             </button>
           </div>
         </form>
       </div>
 
-      {/* --- ALUMNI GRID --- */}
-      <section className="max-w-6xl mx-auto py-10 px-6">
+      <main className="max-w-6xl mx-auto py-10 px-6">
         
-        <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
-           <h2 className="text-lg font-bold uppercase text-gray-800 flex items-center gap-2">
-             Results <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">{filteredAlumni.length}</span>
+        <div className="mb-6 flex items-center justify-between border-b border-gray-300 pb-2">
+           <h2 className="text-sm font-bold uppercase tracking-wide text-gray-900 flex items-center gap-2">
+             Results <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">{filteredAlumni.length}</span>
            </h2>
         </div>
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filteredAlumni.length > 0 ? (
-              filteredAlumni.map((alumnus) => (
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  key={alumnus.id}
-                  className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col group"
-                >
-                  {/* Profile Header */}
-                  <div className="flex items-start gap-4 mb-5 border-b border-gray-100 pb-4">
-                    <div className="w-16 h-16 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-blue-700 font-bold text-xl uppercase shrink-0">
-                      {alumnus.name.charAt(0)}
+        {isLoading ? (
+          <div className="py-20 flex flex-col items-center justify-center">
+            <div className="w-8 h-8 border-4 border-gray-200 border-t-blue-700 rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence mode="popLayout">
+              {filteredAlumni.length > 0 ? (
+                filteredAlumni.map((alumnus) => (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.15 }}
+                    key={alumnus._id}
+                    className="bg-white p-6 border border-gray-200 rounded shadow-sm hover:shadow-md transition-all flex flex-col group"
+                  >
+                    <div className="flex items-start gap-4 mb-5 pb-4 border-b border-gray-100">
+                      <div className="w-14 h-14 bg-gray-100 border border-gray-200 rounded flex items-center justify-center text-blue-700 font-bold text-xl uppercase shrink-0 overflow-hidden">
+                        {alumnus.profileImage ? (
+                          <img src={`http://localhost:8000/${alumnus.profileImage}`} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          alumnus.fullName?.charAt(0) || "U"
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-bold text-gray-900 leading-tight truncate">
+                          {alumnus.fullName}
+                        </h3>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-blue-700 mt-1">
+                          Class of {alumnus.graduationYear || "N/A"}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 leading-tight">
-                        {alumnus.name}
-                      </h3>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 mt-1">
-                        Class of {alumnus.batch}
-                      </p>
+
+                    <div className="space-y-3 mb-6 flex-1">
+                      <DataRow icon={<GraduationCap size={16} />} text={alumnus.department || "N/A"} />
+                      <DataRow icon={<Briefcase size={16} />} text={alumnus.companyName || "N/A"} />
+                      <DataRow icon={<MapPin size={16} />} text={alumnus.location || "N/A"} />
                     </div>
-                  </div>
 
-                  {/* Profile Details */}
-                  <div className="space-y-3 mb-6 flex-1">
-                    <InfoItem icon={<GraduationCap size={16} />} text={alumnus.dept} />
-                    <InfoItem icon={<Briefcase size={16} />} text={alumnus.company} />
-                    <InfoItem icon={<MapPin size={16} />} text={alumnus.location} />
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-3 mt-auto">
-                    <a
-                      href={`mailto:${alumnus.email}`}
-                      className="flex-1 bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-xs uppercase tracking-wide hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Mail size={14}/> Contact
-                    </a>
-                    <button className="px-4 py-2 bg-blue-50 border border-blue-100 text-blue-700 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors">
-                      <Linkedin size={16}/>
-                    </button>
-                  </div>
+                    <div className="flex gap-2 mt-auto">
+                      <a
+                        href={`mailto:${alumnus.email}`}
+                        className="flex-1 bg-gray-50 border border-gray-200 text-gray-800 hover:bg-gray-100 hover:text-blue-700 py-2 rounded font-bold text-[11px] uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Mail size={14}/> Contact
+                      </a>
+                      {alumnus.linkedin && (
+                        <a 
+                          href={alumnus.linkedin} target="_blank" rel="noreferrer"
+                          className="px-4 py-2 bg-blue-50 border border-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white rounded transition-colors flex items-center justify-center"
+                        >
+                          <Linkedin size={16}/>
+                        </a>
+                      )}
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full text-center py-20 border border-gray-200 bg-white rounded shadow-sm">
+                  <Search size={40} className="mx-auto text-gray-300 mb-3" />
+                  <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
+                    No Alumni Found
+                  </h2>
+                  <p className="text-gray-500 text-sm mt-1 font-medium">
+                    Try adjusting your search criteria or department filter.
+                  </p>
                 </motion.div>
-              ))
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="col-span-full text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm"
-              >
-                <Search size={40} className="mx-auto text-gray-300 mb-3" />
-                <h2 className="text-lg font-bold text-gray-600 uppercase tracking-wide">
-                  No Alumni Found
-                </h2>
-                <p className="text-gray-500 text-sm mt-1">
-                  Try adjusting your search criteria or department filter.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </section>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </main>
 
     </div>
   );
 };
 
-/* --- Custom Lucide Icon Import --- */
-const UsersIcon = ({ size, className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-);
-
-const InfoItem = ({ icon, text }) => (
-  <div className="flex items-start gap-3 text-sm text-gray-600 font-medium">
-    <span className="text-gray-400 mt-0.5">{icon}</span> 
-    <span className="leading-snug">{text}</span>
+const DataRow = ({ icon, text }) => (
+  <div className="flex items-start gap-3">
+    <span className="text-gray-400 mt-0.5 shrink-0">{icon}</span> 
+    <span className="block text-sm font-semibold text-gray-700 truncate leading-snug">{text}</span>
   </div>
 );
 

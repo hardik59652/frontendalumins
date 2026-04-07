@@ -36,6 +36,9 @@ import ReunionAdmin from './pages/admindashboard/reunionadmnin.jsx'
 import AdminPendingGiveBack from './pages/admindashboard/giveback.jsx'
 import MyMentor from './pages/alumindashboard/mymentor.jsx'
 import MyVolunteer from './pages/alumindashboard/myvolunteer.jsx'
+import EditProfile from './pages/alumindashboard/Editprofile.jsx'
+import Profile from './pages/alumindashboard/profile.jsx'
+import Notifications from './pages/alumindashboard/notifications.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -48,13 +51,14 @@ const router = createBrowserRouter(
       <Route path='achivements' element={<Achievements />}/>
       <Route path='opportunities' element={<Opportunities />} />
       <Route path='donation' element={<Donation />} />
-      <Route path='/givingback' element={<GivingBackPage />} />
+      <Route path='givingback' element={<GivingBackPage />} />
       <Route path="alumni-dashboard" element={<AlumniDashboard />} />
       <Route path="alumindirectory" element={<AlumniDirectory />} />
       <Route path="reunion" element={<Reunion />} />
       <Route path="newsevents" element={<NewsEventsPage />} />
       <Route path="/apply/:jobId" element={<ApplyJob />} />
       <Route path="/my-applications" element={<MyApplications />} />
+      <Route path="/edit-profile" element={<EditProfile />} />
       {/* <Route path="/dashboard" element={<AlumniDashboard />} /> */}
       <Route path="/my-posted-jobs" element={<MyPostedJobs />} />
 <Route path="/job-applications/:jobId" element={<JobApplicants />} />
@@ -62,6 +66,8 @@ const router = createBrowserRouter(
 <Route path="/my-donation" element={<MyDonations />} />
 <Route path="/my-mentor" element={<MyMentor/>} />
 <Route path="/my-volunteer" element={<MyVolunteer />} />
+<Route path="profile" element={<Profile />} />
+<Route path="notifications" element={<Notifications />} />
       {/* ADMIN ROUTES */}
 
       <Route path="admin-dashboard" element={<AdminLayout />}>
@@ -80,6 +86,8 @@ const router = createBrowserRouter(
 <Route path="reunion" element={<ReunionAdmin />} />
 <Route path="giveback" element={<AdminPendingGiveBack />} />
 <Route path="/admin-dashboard/events" element={<ManageEvents />} />
+
+
 
       </Route>
 

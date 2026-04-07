@@ -3,15 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Users, Calendar, MapPin, Heart, X, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 
-// Developer: Yash Patel
-// Description: Official Reunion & Events Module (Enterprise UI)
-
 const Reunion = () => {
   const [showRegModal, setShowRegModal] = useState(false);
   const [reunion, setReunion] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Form State
   const [formData, setFormData] = useState({
     fullName: "",
     batch: "",
@@ -19,7 +15,6 @@ const Reunion = () => {
     galaDinner: "Yes, I'll be there!"
   });
 
-  // Fetch reunion from backend
   const fetchReunion = async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/v1/reunion', {
@@ -48,7 +43,6 @@ const Reunion = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call for RSVP
     setTimeout(() => {
       alert("RSVP Confirmed! We look forward to seeing you at the reunion.");
       setShowRegModal(false);
@@ -57,7 +51,6 @@ const Reunion = () => {
     }, 800);
   };
 
-  // Helper to format image URL safely
   const getImageUrl = (path) => {
     if (!path) return "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80";
     return path.startsWith('http') ? path : `http://localhost:8000/${path}`;
@@ -66,7 +59,6 @@ const Reunion = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-20 font-sans text-gray-800 overflow-x-hidden">
       
-      {/* 1. HERO SECTION - Clean & Standard Banner */}
       <section className="relative h-[60vh] md:h-[50vh] flex items-center justify-center overflow-hidden border-b-4 border-blue-600">
         <div className="absolute inset-0 bg-blue-900/80 z-10"></div>
         <div 
@@ -99,7 +91,6 @@ const Reunion = () => {
         </motion.div>
       </section>
 
-      {/* 2. STATS/INFO BAR - Clean Grid Layout */}
       <div className="max-w-6xl mx-auto px-6 -mt-8 relative z-30">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InfoCard
@@ -120,8 +111,7 @@ const Reunion = () => {
         </div>
       </div>
 
-      {/* 3. REUNION HIGHLIGHTS - Professional Grid */}
-      <section className="py-16 md:py-24 max-w-6xl mx-auto px-6 border-b border-gray-200">
+      <section className="py-16 md:py-24 max-w-7xl mx-auto px-6 border-b border-gray-200">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-800 uppercase tracking-wide mb-3">Event Highlights</h2>
           <div className="h-1 w-16 bg-blue-700 mx-auto"></div>
@@ -146,7 +136,6 @@ const Reunion = () => {
         </div>
       </section>
 
-      {/* 4. MEMORY LANE - Standard Two-Column Layout */}
       <section className="bg-gray-900 py-16 md:py-24 px-6 border-b-4 border-blue-600 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
@@ -167,8 +156,6 @@ const Reunion = () => {
               <Camera size={16} /> Share a Memory
             </button>
           </motion.div>
-
-          {/* Clean Collage instead of tilted messy images */}
           <div className="grid grid-cols-2 gap-4">
             <div className="h-48 md:h-64 bg-gray-800 border border-gray-700 rounded overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80" alt="Alumni Gathered" className="h-full w-full object-cover opacity-80 hover:opacity-100 transition-opacity" />
@@ -181,19 +168,16 @@ const Reunion = () => {
         </div>
       </section>
 
-      {/* 5. REGISTRATION MODAL - Standard Center Modal */}
       <AnimatePresence>
         {showRegModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            
-            {/* Backdrop Blur */}
+           
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
               className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
               onClick={() => setShowRegModal(false)}
             />
             
-            {/* Modal Box */}
             <motion.div 
               initial={{ scale: 0.95, opacity: 0, y: 15 }} 
               animate={{ scale: 1, opacity: 1, y: 0 }} 
@@ -291,7 +275,6 @@ const Reunion = () => {
   );
 };
 
-// --- Clean Info Card Component ---
 const InfoCard = ({ icon, title, desc }) => (
   <div className="bg-white p-5 border border-gray-200 shadow-sm rounded-lg flex items-center gap-4 hover:border-blue-300 transition-colors">
     <div className="bg-gray-50 border border-gray-100 p-3 rounded shrink-0">
