@@ -158,7 +158,7 @@ const AdminDonations = () => {
                   <td className="p-4 font-semibold">
                     {donation.isAnonymous
                       ? "Anonymous"
-                      : donation.userId?.name}
+                      : donation.userId?.fullName}
                   </td>
 
                   {/* CAMPAIGN */}

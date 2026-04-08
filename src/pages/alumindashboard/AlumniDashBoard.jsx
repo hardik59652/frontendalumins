@@ -108,7 +108,11 @@ const AlumniDashboard = () => {
   label="Account Settings"
   path="/settings"
 />
-
+<DashboardLink 
+  icon={<Settings size={18}/>} 
+  label="my posted achievements"
+  path="/my-achievements"
+/>
 </div>
           </div>
         </div>

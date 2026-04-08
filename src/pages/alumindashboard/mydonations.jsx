@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Calendar, Wallet } from "lucide-react";
+import { Heart, Calendar, Wallet, TrendingUp } from "lucide-react";
 
 const MyDonations = () => {
 
@@ -9,7 +9,6 @@ const MyDonations = () => {
 
   const fetchMyDonations = async () => {
     try {
-
       const res = await fetch(
         "http://localhost:8000/api/v1/donation/my",
         {
@@ -34,25 +33,60 @@ const MyDonations = () => {
     fetchMyDonations();
   }, []);
 
+  const totalDonated = donations.reduce((acc, d) => acc + d.amount, 0);
+
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-500 font-semibold">
+      <div className="flex justify-center items-center h-[60vh] text-gray-500 font-semibold">
         Loading your donations...
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
 
-      <h1 className="text-3xl font-black mb-8 flex items-center gap-3">
-        <Heart className="text-red-500" />
-        My Donations
-      </h1>
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-8">
+        <Heart className="text-red-500" size={30} />
+        <h1 className="text-3xl font-bold">My Donations</h1>
+      </div>
 
+      {/* Stats */}
+      <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+        <div className="bg-white shadow rounded-xl p-6 flex items-center gap-4">
+          <Wallet className="text-green-600" size={28} />
+          <div>
+            <p className="text-gray-500 text-sm">Total Donated</p>
+            <p className="text-xl font-bold">₹{totalDonated}</p>
+          </div>
+        </div>
+
+        <div className="bg-white shadow rounded-xl p-6 flex items-center gap-4">
+          <TrendingUp className="text-blue-600" size={28} />
+          <div>
+            <p className="text-gray-500 text-sm">Total Donations</p>
+            <p className="text-xl font-bold">{donations.length}</p>
+          </div>
+        </div>
+
+        <div className="bg-white shadow rounded-xl p-6 flex items-center gap-4">
+          <Heart className="text-pink-500" size={28} />
+          <div>
+            <p className="text-gray-500 text-sm">Campaigns Supported</p>
+            <p className="text-xl font-bold">
+              {new Set(donations.map(d => d.campaignId?._id)).size}
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Donations */}
       {donations.length === 0 ? (
 
-        <div className="text-gray-500 text-center mt-20">
+        <div className="bg-white p-10 rounded-xl shadow text-center text-gray-500">
           You have not donated yet.
         </div>
 
@@ -64,11 +98,11 @@ const MyDonations = () => {
 
             <motion.div
               key={donation._id}
-              whileHover={{ y: -5 }}
-              className="bg-white rounded-2xl shadow-lg p-6 border"
+              whileHover={{ y: -6 }}
+              className="bg-white rounded-2xl shadow-md p-6 border hover:shadow-xl transition"
             >
 
-              <h3 className="text-lg font-bold mb-2">
+              <h3 className="text-lg font-semibold mb-2">
                 {donation.campaignId?.title || "Campaign"}
               </h3>
 
@@ -85,12 +119,12 @@ const MyDonations = () => {
               </div>
 
               {donation.message && (
-                <p className="text-gray-500 text-sm italic mb-3">
+                <p className="text-gray-500 text-sm italic mb-4">
                   "{donation.message}"
                 </p>
               )}
 
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex justify-between items-center">
 
                 <span
                   className={`text-xs px-3 py-1 rounded-full font-semibold ${

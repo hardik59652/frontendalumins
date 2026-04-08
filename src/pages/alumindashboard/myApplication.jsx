@@ -2,77 +2,110 @@ import React, { useEffect, useState } from "react";
 
 const MyApplications = () => {
 
-  const [applications,setApplications] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("MyApplications component loaded");
+
     const fetchApplications = async () => {
 
-      const res = await fetch(
-        "http://localhost:8000/api/v1/jobapplication/myApplications",
-        {
-          credentials:"include"
+      try {
+
+        const res = await fetch(
+          "http://localhost:8000/api/v1/jobapplication/myApplications",
+          {
+            credentials: "include"
+          }
+        );
+
+        const data = await res.json();
+
+        if (data?.data) {
+          setApplications(data.data);
         }
-      );
 
-      const data = await res.json();
-      console.log(data)
-
-      if(data?.data){
-        setApplications(data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
 
     };
-    
-    {applications.length === 0 && (
-      <p className="text-gray-500">No applications found</p>
-    )}
+
     fetchApplications();
 
-  },[]);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center mt-20 text-lg">
+        Loading applications...
+      </div>
+    );
+  }
 
   return (
 
-    <div className="p-6">
+    <div className="min-h-screen bg-gray-100 p-8">
 
-      <h2 className="text-2xl font-bold mb-6">
-        My Job Applications
-      </h2>
+      <div className="max-w-4xl mx-auto">
 
-      <div className="space-y-4">
+        <h2 className="text-3xl font-bold mb-8">
+          My Job Applications
+        </h2>
 
-        {applications.map(app => (
-
-          <div
-            key={app._id}
-            className="border p-4 rounded-xl bg-white shadow"
-          >
-
-            <h3 className="font-bold text-lg">
-              {app.jobId?.title}
-            </h3>
-
-            <p className="text-gray-600">
-              {app.jobId?.companyName}
+        {applications.length === 0 && (
+          <div className="bg-white p-6 rounded-xl shadow text-center">
+            <p className="text-gray-500">
+              No applications found
             </p>
-
-            <p className="text-sm mt-2">
-
-              Status:
-
-              <span className="ml-2 font-semibold text-blue-600">
-                {app.status}
-              </span>
-
-            </p>
-
-            <p className="text-xs text-gray-500 mt-1">
-              Applied: {new Date(app.createdAt).toLocaleDateString()}
-            </p>
-
           </div>
+        )}
 
-        ))}
+        <div className="grid gap-6">
+
+          {applications.map((app) => (
+
+            <div
+              key={app._id}
+              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition"
+            >
+
+              <div className="flex justify-between items-start">
+
+                <div>
+
+                  <h3 className="text-xl font-semibold">
+                    {app.jobId?.title}
+                  </h3>
+
+                  <p className="text-gray-600 mt-1">
+                    Company: <span className="font-medium">{app.jobId?.companyName}</span>
+                  </p>
+
+                </div>
+
+                <span
+                  className={`px-3 py-1 text-sm rounded-full font-semibold
+                  ${app.status === "pending" ? "bg-yellow-100 text-yellow-700" : ""}
+                  ${app.status === "accepted" ? "bg-green-100 text-green-700" : ""}
+                  ${app.status === "rejected" ? "bg-red-100 text-red-700" : ""}
+                  `}
+                >
+                  {app.status}
+                </span>
+
+              </div>
+
+              <p className="text-sm text-gray-500 mt-3">
+                Applied on {new Date(app.createdAt).toLocaleDateString()}
+              </p>
+
+            </div>
+
+          ))}
+
+        </div>
 
       </div>
 

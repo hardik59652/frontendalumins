@@ -36,6 +36,13 @@ import ReunionAdmin from './pages/admindashboard/reunionadmnin.jsx'
 import AdminPendingGiveBack from './pages/admindashboard/giveback.jsx'
 import MyMentor from './pages/alumindashboard/mymentor.jsx'
 import MyVolunteer from './pages/alumindashboard/myvolunteer.jsx'
+import Profile from './pages/alumindashboard/userProfile.jsx'
+import AccountSettings from './pages/alumindashboard/accountSetting.jsx'
+import JobDetails from "./pages/alumindashboard/jobDetail.jsx";
+import MyAchievements from './pages/alumindashboard/myachievements.jsx'
+import EditJob from "./pages/alumindashboard/editjob.jsx";
+import AchievementDetail from './pages/alumindashboard/achievementsDetail.jsx'
+import EditAchievement from './pages/alumindashboard/editAchievements.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -62,6 +69,14 @@ const router = createBrowserRouter(
 <Route path="/my-donation" element={<MyDonations />} />
 <Route path="/my-mentor" element={<MyMentor/>} />
 <Route path="/my-volunteer" element={<MyVolunteer />} />
+<Route path="/profile" element={<Profile />} /> 
+<Route path="/my-achievements" element={<MyAchievements />} /> 
+<Route path="/job-details/:id" element={<JobDetails />} />
+<Route path="/achievement-details/:id" element={<AchievementDetail />} />
+<Route path="/edit-achievement/:id" element={<EditAchievement />} />
+<Route path="/edit-job/:id" element={<EditJob />} />
+
+<Route path="/settings" element={<AccountSettings />} />
       {/* ADMIN ROUTES */}
 
       <Route path="admin-dashboard" element={<AdminLayout />}>

@@ -6,7 +6,7 @@ export default function Header() {
 
   const [user, setUser] = useState(null);
 
-  // ✅ UPDATE 1: navigate should be declared here (TOP of component)
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -231,7 +231,8 @@ Registration
 {user && (
 
 <Link
-to="/dashboard"
+to={user?.role === "admin" ? "/admin-dashboard" : "/alumni-dashboard"}
+// to="/dashboard"
 onClick={()=>setIsMenuOpen(false)}
 className="text-center py-3 font-semibold bg-gray-100 rounded-lg"
 >

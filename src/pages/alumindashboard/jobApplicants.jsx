@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const JobApplicants = () => {
 
   const { jobId } = useParams();
-
+  const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
-  console.log(applications)
-  const fetchApplicants = async () => {
 
+  const fetchApplicants = async () => {
     const res = await fetch(
       `http://localhost:8000/api/v1/jobapplication/job/${jobId}`,
-      {
-        credentials: "include"
-      }
+      { credentials: "include" }
     );
 
     const data = await res.json();
@@ -21,8 +18,6 @@ const JobApplicants = () => {
     if (data?.data) {
       setApplications(data.data);
     }
-
-
   };
 
   useEffect(() => {
@@ -35,9 +30,7 @@ const JobApplicants = () => {
       `http://localhost:8000/api/v1/jobapplication/status/${id}`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ status })
       }
@@ -51,78 +44,101 @@ const JobApplicants = () => {
 
   return (
 
-    <div className="p-6">
+    <div className="min-h-screen bg-gray-100 py-10 px-6">
 
-      <h2 className="text-2xl font-bold mb-6">
-        Job Applicants
-      </h2>
+      <div className="max-w-6xl mx-auto">
 
-      <div className="space-y-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-6 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900"
+        >
+          ← Back
+        </button>
 
-        {applications.map(app => (
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          Job Applicants
+        </h2>
 
-          <div
-            key={app._id}
-            className="border p-4 rounded-xl bg-white shadow"
-          >
-  {app.userId?.profileImage && (
-  <img
-    src={`http://localhost:8000/${app.userId.profileImage}`}
-    alt="profile"
-    className="w-10 h-10 rounded-full"
-  />
-)}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <h3 className="font-bold text-lg">
-            fullName:{app.userId?.fullName}
-            </h3>
+          {applications.map((app) => (
 
-            <p className="text-gray-600">
-            email:{app.userId?.email}
-            </p>
+            <div
+              key={app._id}
+              className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition"
+            >
 
-            <p className="text-sm mt-2">
-              Status:
-              <span className="ml-2 font-semibold text-blue-600">
-                {app.status}
-              </span>
-            </p>
+              <div className="flex items-center gap-4 mb-4">
 
-            <div className="flex gap-3 mt-4">
+                {app.userId?.profileImage ? (
+                  <img
+                    src={`http://localhost:8000/${app.userId.profileImage}`}
+                    alt="profile"
+                    className="w-14 h-14 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center text-xl font-bold">
+                    {app.userId?.fullName?.charAt(0)}
+                  </div>
+                )}
 
-              <button
-                onClick={() => updateStatus(app._id, "approved")}
-                className="bg-green-600 text-white px-4 py-1 rounded"
+                <div>
+                  <h3 className="font-semibold text-lg">
+                    {app.userId?.fullName}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {app.userId?.email}
+                  </p>
+                </div>
+
+              </div>
+
+              <p className="text-sm mb-3">
+                Status :
+                <span className="ml-2 font-semibold text-blue-600">
+                  {app.status}
+                </span>
+              </p>
+
+              <a
+                href={`http://localhost:8000/${app.resumeUrl}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 underline text-sm"
               >
-                Approve
-              </button>
+                View Resume
+              </a>
 
-              <button
-                onClick={() => updateStatus(app._id, "rejected")}
-                className="bg-red-600 text-white px-4 py-1 rounded"
-              >
-                Reject
-              </button>
+              <div className="flex gap-3 mt-5">
+
+                <button
+                  onClick={() => updateStatus(app._id, "approved")}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg"
+                >
+                  Approve
+                </button>
+
+                <button
+                  onClick={() => updateStatus(app._id, "rejected")}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                >
+                  Reject
+                </button>
+
+              </div>
 
             </div>
-            <a
-  href={`http://localhost:8000/${app.resumeUrl}`}
-  target="_blank"
-  className="text-blue-600 underline"
->
-  View Resume
-</a>
-           
 
-          </div>
+          ))}
 
-        ))}
+        </div>
 
       </div>
 
     </div>
 
   );
+
 };
 
 export default JobApplicants;

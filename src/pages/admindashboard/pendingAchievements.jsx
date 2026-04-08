@@ -32,7 +32,7 @@ function PendingAchievements() {
 
   const approveAchievement = async (id) => {
     try {
-
+      
       const res = await fetch(
         `http://localhost:8000/api/v1/achievements/approve/${id}`,
         {
@@ -97,7 +97,7 @@ function PendingAchievements() {
           <tbody>
 
             {achievements.map((item) => (
-
+             
               <tr
                 key={item._id}
                 className="border-b hover:bg-gray-50"
@@ -117,14 +117,18 @@ function PendingAchievements() {
                 </td>
 
                 <td className="p-4">
-
                   {item.photo && (
                     <img
+                   
                       src={`http://localhost:8000/${item.photo}`}
                       alt="photo not available"
                       className="w-16 h-16 object-cover rounded-lg"
                     />
+
                   )}
+                 
+                  
+                  
 
                 </td>
 

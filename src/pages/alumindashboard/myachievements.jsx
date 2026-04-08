@@ -1,76 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const MyPostedJobs = () => {
+const MyAchievements = () => {
 
-  const [jobs,setJobs] = useState([]);
+  const [achievements, setAchievements] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
 
-    const fetchJobs = async () => {
+    const fetchAchievements = async () => {
 
-      try{
+      try {
 
         const res = await fetch(
-          "http://localhost:8000/api/v1/jobopportunity/myjob",
-          { credentials:"include" }
+          "http://localhost:8000/api/v1/achievements/my-achievements",
+          { credentials: "include" }
         );
 
         const data = await res.json();
 
-        if(data?.data){
-          setJobs(data.data);
+        if (data?.data) {
+          setAchievements(data.data);
         }
 
-      }catch(err){
+      } catch (err) {
         console.log(err);
       }
 
     };
 
-    fetchJobs();
+    fetchAchievements();
 
-  },[]);
+  }, []);
 
+  // DELETE ACHIEVEMENT
+  const handleDelete = async (id) => {
 
-  // DELETE JOB FUNCTION
-  const handleDelete = async (jobId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this achievement?"
+    );
 
-    const confirmDelete = window.confirm("Are you sure you want to delete this job?");
+    if (!confirmDelete) return;
 
-    if(!confirmDelete) return;
-
-    try{
+    try {
 
       const res = await fetch(
-        `http://localhost:8000/api/v1/jobopportunity/delete/${jobId}`,
+        `http://localhost:8000/api/v1/achievements/delete/${id}`,
         {
-          method:"DELETE",
-          credentials:"include"
+          method: "DELETE",
+          credentials: "include"
         }
       );
 
       const data = await res.json();
 
-      if(res.ok){
+      if (res.ok) {
 
-        // remove job from UI
-        setJobs(prev => prev.filter(job => job._id !== jobId));
+        setAchievements(prev =>
+          prev.filter(item => item._id !== id)
+        );
 
-        alert("Job deleted successfully");
+        alert("Achievement deleted successfully");
 
-      }else{
-        alert(data.message || "Failed to delete job");
+      } else {
+        alert(data.message || "Failed to delete achievement");
       }
 
-    }catch(err){
+    } catch (err) {
       console.log(err);
       alert("Something went wrong");
     }
 
   };
-
 
   return (
 
@@ -78,95 +79,95 @@ const MyPostedJobs = () => {
 
       <div className="max-w-6xl mx-auto px-6">
 
+        {/* HEADER */}
+
         <div className="flex justify-between items-center mb-8">
 
           <h2 className="text-3xl font-bold text-gray-800">
-            My Posted Jobs
+            My Achievements
           </h2>
 
           <button
-            onClick={() => navigate("/opportunities")}
+            onClick={() => navigate("/add-achievement")}
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow"
           >
-            + Post New Job
+            + Add Achievement
           </button>
 
         </div>
 
-        {jobs.length === 0 && (
+        {/* EMPTY STATE */}
+
+        {achievements.length === 0 && (
 
           <div className="text-center py-20 bg-white rounded-xl shadow">
 
             <h3 className="text-xl font-semibold text-gray-700">
-              No Jobs Posted Yet
+              No Achievements Added
             </h3>
 
             <p className="text-gray-500 mt-2">
-              Start by posting a new job opportunity.
+              Share your accomplishments with the alumni network.
             </p>
 
             <button
-              onClick={() => navigate("/opportunities")}
+              onClick={() => navigate("/add-achievement")}
               className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg"
             >
-              Post Job
+              Add Achievement
             </button>
 
           </div>
 
         )}
 
+        {/* ACHIEVEMENT GRID */}
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {jobs.map(job => (
+          {achievements.map(achievement => (
 
             <div
-              key={job._id}
+              key={achievement._id}
               className="bg-white border rounded-xl p-6 shadow-sm hover:shadow-lg transition"
             >
 
               <h3 className="text-lg font-semibold text-gray-800">
-                {job.title}
+                {achievement.title}
               </h3>
 
               <p className="text-gray-600 mt-1">
-                {job.companyName}
+                {achievement.organization}
               </p>
 
               <p className="text-sm text-gray-500 mt-2">
-                📍 {job.location}
+                📅 {achievement.year}
               </p>
 
-              <p className="text-sm text-gray-500">
-                💼 {job.jobType}
+              <p className="text-sm text-gray-500 mt-2 line-clamp-3">
+                {achievement.description}
               </p>
+
+              {/* ACTION BUTTONS */}
 
               <div className="flex flex-wrap gap-2 mt-5">
 
                 <button
-                  onClick={() => navigate(`/job-details/${job._id}`)}
+                  onClick={() => navigate(`/achievement-details/${achievement._id}`)}
                   className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm"
                 >
                   View
                 </button>
 
                 <button
-                  onClick={() => navigate(`/edit-job/${job._id}`)}
+                  onClick={() => navigate(`/edit-achievement/${achievement._id}`)}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm"
                 >
                   Edit
                 </button>
 
                 <button
-                  onClick={() => navigate(`/job-applications/${job._id}`)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm"
-                >
-                  Applications
-                </button>
-
-                {/* DELETE BUTTON */}
-                <button
-                  onClick={() => handleDelete(job._id)}
+                  onClick={() => handleDelete(achievement._id)}
                   className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm"
                 >
                   Delete
@@ -188,4 +189,4 @@ const MyPostedJobs = () => {
 
 };
 
-export default MyPostedJobs;
+export default MyAchievements;
