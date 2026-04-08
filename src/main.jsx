@@ -43,6 +43,9 @@ import MyAchievements from './pages/alumindashboard/myachievements.jsx'
 import EditJob from "./pages/alumindashboard/editjob.jsx";
 import AchievementDetail from './pages/alumindashboard/achievementsDetail.jsx'
 import EditAchievement from './pages/alumindashboard/editAchievements.jsx'
+import EditProfile from './pages/alumindashboard/Editprofile.jsx'
+import Profile from './pages/alumindashboard/profile.jsx'
+import Notifications from './pages/alumindashboard/notifications.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -55,13 +58,14 @@ const router = createBrowserRouter(
       <Route path='achivements' element={<Achievements />}/>
       <Route path='opportunities' element={<Opportunities />} />
       <Route path='donation' element={<Donation />} />
-      <Route path='/givingback' element={<GivingBackPage />} />
+      <Route path='givingback' element={<GivingBackPage />} />
       <Route path="alumni-dashboard" element={<AlumniDashboard />} />
       <Route path="alumindirectory" element={<AlumniDirectory />} />
       <Route path="reunion" element={<Reunion />} />
       <Route path="newsevents" element={<NewsEventsPage />} />
       <Route path="/apply/:jobId" element={<ApplyJob />} />
       <Route path="/my-applications" element={<MyApplications />} />
+      <Route path="/edit-profile" element={<EditProfile />} />
       {/* <Route path="/dashboard" element={<AlumniDashboard />} /> */}
       <Route path="/my-posted-jobs" element={<MyPostedJobs />} />
 <Route path="/job-applications/:jobId" element={<JobApplicants />} />
@@ -77,6 +81,8 @@ const router = createBrowserRouter(
 <Route path="/edit-job/:id" element={<EditJob />} />
 
 <Route path="/settings" element={<AccountSettings />} />
+<Route path="profile" element={<Profile />} />
+<Route path="notifications" element={<Notifications />} />
       {/* ADMIN ROUTES */}
 
       <Route path="admin-dashboard" element={<AdminLayout />}>
@@ -95,6 +101,8 @@ const router = createBrowserRouter(
 <Route path="reunion" element={<ReunionAdmin />} />
 <Route path="giveback" element={<AdminPendingGiveBack />} />
 <Route path="/admin-dashboard/events" element={<ManageEvents />} />
+
+
 
       </Route>
 

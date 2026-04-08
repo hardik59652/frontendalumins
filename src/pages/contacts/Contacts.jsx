@@ -25,7 +25,7 @@ const Contacts = () => {
         </div>
       </section>
 
-            <section className="max-w-6xl mx-auto py-10 px-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <section className="max-w-7xl mx-auto py-10 px-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
         
         <motion.div 
           initial={{ opacity: 0, x: -20 }}

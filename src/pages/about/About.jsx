@@ -5,7 +5,6 @@ const About = () => {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       
-      {/* 1. Header Section - Solid & Corporate */}
       <section className="bg-blue-800 text-white py-16 md:py-24 px-6 text-center border-b-4 border-blue-600">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl font-bold mb-4 uppercase tracking-wide">
@@ -17,11 +16,9 @@ const About = () => {
         </div>
       </section>
 
-      {/* 2. History & Mission - Standard Grid Layout */}
-      <section className="py-12 md:py-16 max-w-6xl mx-auto px-6">
+      <section className="py-12 md:py-16 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           
-          {/* Text Content */}
           <div className="bg-white p-8 border border-gray-200 shadow-sm h-full">
             <h2 className="text-2xl font-bold text-blue-900 mb-6 uppercase border-b border-gray-200 pb-3">
               Our Journey Since 1994
@@ -39,7 +36,6 @@ const About = () => {
             </div>
           </div>
 
-          {/* Stats Grid - Boxy & Clean */}
           <div className="grid grid-cols-2 gap-4 h-full">
             <StatBox icon={<Landmark size={24}/>} count="1994" label="Established" />
             <StatBox icon={<Users size={24}/>} count="Govt. of Gujarat" label="Founded By" />
@@ -50,9 +46,8 @@ const About = () => {
         </div>
       </section>
 
-      {/* 3. Core Values - Simple Cards */}
       <section className="py-12 bg-white border-t border-gray-200 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="mb-10 text-center">
             <h2 className="text-2xl font-bold text-gray-800 uppercase tracking-wide">What Drives Us</h2>
             <div className="h-1 w-16 bg-blue-700 mx-auto mt-3"></div>
@@ -78,7 +73,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* 4. Quote Section - Traditional Blockquote */}
       <section className="py-16 bg-gray-100 border-t border-gray-200 px-6 text-center">
         <div className="max-w-3xl mx-auto">
           <Quote size={40} className="text-gray-300 mx-auto mb-4" />
@@ -96,8 +90,6 @@ const About = () => {
     </div>
   );
 };
-
-// --- Helper Components (Standard HTML-like structure) ---
 
 const StatBox = ({ icon, count, label }) => (
   <div className="bg-white p-6 border border-gray-200 shadow-sm text-center flex flex-col items-center justify-center">

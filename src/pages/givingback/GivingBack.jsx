@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { Handshake, Users, Calendar, Award, X, Send, AlertCircle, HeartHandshake } from "lucide-react";
 
-// Developer: Yash Patel
-// Description: Official Alumni Volunteering & Mentorship Application Module
-
 function GiveBack() {
   const [activeForm, setActiveForm] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,7 +18,7 @@ function GiveBack() {
       ...prev,
       [name]: value
     }));
-    setErrorMsg(""); // clear error on typing
+    setErrorMsg(""); 
   };
 
   const handleSubmit = async (e) => {
@@ -72,7 +69,6 @@ function GiveBack() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-20">
 
-      {/* --- HERO SECTION --- */}
       <section className="bg-blue-800 text-white py-14 px-6 border-b-4 border-blue-600">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
@@ -87,7 +83,6 @@ function GiveBack() {
         </div>
       </section>
 
-      {/* --- CARDS SECTION --- */}
       <div className="max-w-5xl mx-auto py-12 px-6">
         
         <div className="mb-8 border-b border-gray-200 pb-3 text-center">
@@ -98,7 +93,6 @@ function GiveBack() {
 
         <div className="grid md:grid-cols-2 gap-8">
 
-          {/* Mentor Card */}
           <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 flex flex-col hover:border-blue-300 hover:shadow-md transition-all">
             <div className="w-14 h-14 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-center mb-6 text-blue-700">
               <Award size={28} />
@@ -117,7 +111,6 @@ function GiveBack() {
             </button>
           </div>
 
-          {/* Volunteer Card */}
           <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 flex flex-col hover:border-green-300 hover:shadow-md transition-all">
             <div className="w-14 h-14 bg-green-50 border border-green-100 rounded-lg flex items-center justify-center mb-6 text-green-700">
               <Users size={28} />
@@ -139,20 +132,16 @@ function GiveBack() {
         </div>
       </div>
 
-      {/* --- MODAL FORM --- */}
       {activeForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           
-          {/* Backdrop Blur */}
           <div 
             className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
             onClick={() => setActiveForm(null)}
           />
 
-          {/* Modal Container */}
           <div className="bg-white rounded-lg w-full max-w-lg shadow-2xl relative z-10 flex flex-col max-h-[90vh] overflow-hidden">
-            
-            {/* Header */}
+           
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center sticky top-0">
               <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2">
                 {activeForm === "mentor" ? <Award className="text-blue-700" size={20}/> : <Users className="text-green-600" size={20}/>}
@@ -166,7 +155,6 @@ function GiveBack() {
               </button>
             </div>
 
-            {/* Body */}
             <div className="p-6 overflow-y-auto">
               
               {errorMsg && (
@@ -178,7 +166,6 @@ function GiveBack() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
 
-                {/* Domain Input */}
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                     Expertise Domain <span className="text-red-500">*</span>
@@ -201,7 +188,6 @@ function GiveBack() {
                   </select>
                 </div>
 
-                {/* Availability Input */}
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                     Availability <span className="text-red-500">*</span>
@@ -220,7 +206,6 @@ function GiveBack() {
                   </select>
                 </div>
 
-                {/* Motivation Input */}
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                     Motivation & Details <span className="text-red-500">*</span>
@@ -241,7 +226,6 @@ function GiveBack() {
                   <p>By submitting, you agree to be contacted by the Alumni Association team regarding opportunities.</p>
                 </div>
 
-                {/* Footer Buttons */}
                 <div className="pt-4 border-t border-gray-200 flex justify-end gap-3 mt-6">
                   <button
                     type="button"
